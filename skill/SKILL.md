@@ -16,7 +16,7 @@ description: >-
   or asks for a disciplined end-to-end engineering workflow rather than a quick patch.
 license: MIT
 metadata:
-  version: 1.0.2
+  version: 1.0.3
   origin: SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife
   homepage: https://github.com/Ferousco-dev/ilana
 ---

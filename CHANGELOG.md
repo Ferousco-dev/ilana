@@ -11,6 +11,14 @@ existing projects behave.
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-08-25
+
+### Fixed
+
+- `ilana update` printed the wrong changelog section. It extracted from the first heading in the
+  file, which is `[Unreleased]`, so the notes shown after an update belonged to the previous
+  release. It now extracts the section for the version actually installed.
+
 ## [1.0.2] - 2026-08-25
 
 Two bugs found by installing into a clean environment and using it on a deliberately flawed

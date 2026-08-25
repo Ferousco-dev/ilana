@@ -341,9 +341,15 @@ do_update() {
     qsay "already current at $after"
   else
     say "ilana $before -> $after"
+    # Show the section for the version we just moved to, not from the first
+    # heading in the file, which is [Unreleased] and belongs to nobody.
     if [ -f "$src/CHANGELOG.md" ]; then
       say ""
-      sed -n '/^## \[/,/^## \[/p' "$src/CHANGELOG.md" | head -25
+      awk -v v="$after" '
+        $0 ~ "^## \\[" v "\\]" { p = 1; print; next }
+        p && /^## \[/ { exit }
+        p { print }
+      ' "$src/CHANGELOG.md" | head -30
     fi
   fi
 }
