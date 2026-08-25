@@ -80,6 +80,31 @@ jobs:
           python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" status
           python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" validate
 
+      # Regression: G5 passed "regression suite runs in CI" on a repository with
+      # zero tests, because the check only looked for a CI config file. A gate
+      # that passes when it should not is worse than no gate.
+      - name: regression, G5 does not pass a regression suite that does not exist
+        run: |
+          tmp=$(mktemp -d); cd "$tmp"; git init -q .
+          mkdir -p .github/workflows src
+          echo "on: [push]" > .github/workflows/ci.yml
+          echo "x = 1" > src/app.py
+
+          out=$(python "$GITHUB_WORKSPACE/skill/instruments/scripts/gate_check.py" \
+                  --gate G5 --rigour 3 --repo .)
+          echo "$out"
+          echo "$out" | grep -q '\[FAIL\] R1+  tests exist' \
+            || { echo "FAIL expected 'tests exist' to fail"; exit 1; }
+          echo "$out" | grep -q '\[FAIL\] R3+  regression suite runs in CI' \
+            || { echo "FAIL regression suite passed with no tests present"; exit 1; }
+
+          mkdir -p tests && printf 'def test_x():\n    assert True\n' > tests/test_x.py
+          out=$(python "$GITHUB_WORKSPACE/skill/instruments/scripts/gate_check.py" \
+                  --gate G5 --rigour 3 --repo .)
+          echo "$out" | grep -q '\[pass\] R3+  regression suite runs in CI' \
+            || { echo "$out"; echo "FAIL regression suite did not pass once tests exist"; exit 1; }
+          echo "ok   G5 regression criterion requires tests to actually exist"
+
       - name: Traceability checker handles an absent matrix
         run: |
           python skill/instruments/scripts/traceability.py --file /nonexistent.csv || true

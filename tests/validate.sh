@@ -112,6 +112,14 @@ for f in "$CMDS/ilana.md" "$CMDS"/ilana/*.md; do
 done
 [ "$fm_ok" -eq 1 ] && ok "every command carries frontmatter and a description"
 
+printf '\nversion drift\n'
+if grep -rn 'Ìlànà v[0-9]' "$SKILL" --include='*.md' >/dev/null 2>&1; then
+  bad "a hardcoded version string is in the skill payload; it will go stale on release"
+  grep -rn 'Ìlànà v[0-9]' "$SKILL" --include='*.md' | sed 's|^|          |'
+else
+  ok "no hardcoded version strings in the skill prose"
+fi
+
 printf '\nupdate\n'
 need_file update/UPDATE.md
 need_file update/check-update.sh

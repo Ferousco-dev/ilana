@@ -16,7 +16,7 @@ use ilana
 You get this, and nothing else happens until you answer:
 
 ```
-Ìlànà v1.0.0 online. Kernel loaded. Awaiting mode selection.
+Ìlànà online. Kernel loaded. Awaiting mode selection.
 
 How should Ìlànà run this?
 

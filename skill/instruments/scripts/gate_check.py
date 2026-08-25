@@ -102,6 +102,16 @@ def has_ci(root):
                       "azure-pipelines.yml", ".drone.yml"))
 
 
+def regression_in_ci(root):
+    """A regression suite cannot be running if no tests exist.
+
+    Checking only for a CI config passes this criterion on a pipeline that does
+    nothing but a syntax check. A gate that passes when it should not is worse
+    than no gate, because it manufactures confidence.
+    """
+    return has_tests(root) and has_ci(root)
+
+
 def has_linter(root):
     return exists(root, ".eslintrc", ".eslintrc.json", ".eslintrc.js", "eslint.config.js",
                   ".flake8", "setup.cfg", "ruff.toml", ".ruff.toml", "pyproject.toml",
@@ -161,7 +171,7 @@ CHECKS = {
         (2, "defect log exists", lambda r: exists(r, ".ilana/defects.md")),
         (1, "MANUAL every REQ and NFR maps to at least one TC", None),
         (2, "MANUAL exit criteria met or shortfall explicit", None),
-        (3, "regression suite runs in CI", has_ci),
+        (3, "regression suite runs in CI", regression_in_ci),
         (3, "MANUAL acceptance signed by a user or client, not a developer", None),
         (5, "MANUAL no open defects of severity high or critical", None),
     ],

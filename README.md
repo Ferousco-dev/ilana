@@ -75,7 +75,7 @@ me to add anything else.
 ```
 > use ilana
 
-Ìlànà v1.0.0 online. Kernel loaded.
+Ìlànà online. Kernel loaded.
 
 How should Ìlànà run this?
  [1] FLEET  a bundle of specialist agents,
@@ -203,7 +203,7 @@ use ilana
 Nothing happens until you answer one question:
 
 ```
-Ìlànà v1.0.0 online. Kernel loaded.
+Ìlànà online. Kernel loaded.
 
 How should Ìlànà run this?
 

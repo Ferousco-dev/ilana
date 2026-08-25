@@ -11,6 +11,27 @@ existing projects behave.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-08-25
+
+Two bugs found by installing into a clean environment and using it on a deliberately flawed
+project, rather than by testing the parts in isolation.
+
+### Fixed
+
+- **G5 passed "regression suite runs in CI" on a repository with zero tests.** The check only
+  looked for a CI config file, so a pipeline doing nothing but a syntax check satisfied it. A gate
+  that passes when it should not is worse than no gate, because it manufactures confidence. The
+  criterion now requires tests to actually exist as well.
+- **`SKILL.md` hardcoded a version string in the boot announcement**, which went stale the moment
+  1.0.1 shipped and would have drifted on every release. The announcement no longer carries a
+  version, and the skill is told to read `manifest.json` if the user asks rather than recalling it.
+
+### Added
+
+- Structural validation fails if any hardcoded version string reappears in the skill prose.
+- A CI regression step asserting G5 fails the regression criterion without tests and passes it once
+  tests are present, checked in both directions.
+
 ## [1.0.1] - 2026-08-25
 
 A field-reported installation bug and everything around it.

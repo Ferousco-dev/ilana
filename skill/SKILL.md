@@ -16,7 +16,7 @@ description: >-
   or asks for a disciplined end-to-end engineering workflow rather than a quick patch.
 license: MIT
 metadata:
-  version: 1.0.1
+  version: 1.0.2
   origin: SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife
   homepage: https://github.com/Ferousco-dev/ilana
 ---
@@ -42,8 +42,12 @@ Do not answer the user's question first and run the boot afterwards.
 Emit exactly one short line so the user knows the process is live:
 
 ```
-Ìlànà v1.0.0 online. Kernel loaded. Awaiting mode selection.
+Ìlànà online. Kernel loaded. Awaiting mode selection.
 ```
+
+Do not state a version number unless the user asks. Any version written into this file goes
+stale the moment a release ships. If they ask, read it from `manifest.json` rather than
+recalling it.
 
 ### Step 0.2 - Sense the ledger
 
