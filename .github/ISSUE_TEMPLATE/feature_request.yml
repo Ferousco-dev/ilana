@@ -1,0 +1,80 @@
+name: Feature request
+description: Propose an addition or a change to Ilana.
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read `GOVERNANCE.md` for how proposals are evaluated, and the "what will be declined"
+        section of `CONTRIBUTING.md` before writing.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of change
+      options:
+        - New gate criterion
+        - New template
+        - New protocol
+        - New anti-pattern
+        - New assessment questions
+        - Instrument improvement
+        - New mode or agent
+        - New phase (high bar; see GOVERNANCE.md)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: >
+        Describe a real situation. The most useful proposals come from something you watched
+        go wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What specifically would be added or changed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceability
+    attributes:
+      label: Traceability
+      description: >
+        The SEN102/212 source material, a named standard, or defensible engineering practice.
+        Say which, and be specific.
+    validations:
+      required: true
+
+  - type: input
+    id: rigour
+    attributes:
+      label: At what rigour does this apply
+      description: 1 throwaway, 3 production, 5 safety-critical. Justify the threshold.
+      placeholder: "R3+ because ..."
+
+  - type: textarea
+    id: cost
+    attributes:
+      label: What does it cost
+      description: >
+        Every addition costs the reader attention and the user time. What is the cost, and why is
+        it worth paying?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Self-check
+      options:
+        - label: This is about software process, not general coding assistance
+        - label: This does not couple the core to a specific vendor or tool
+        - label: This makes the process better, not just the payload larger

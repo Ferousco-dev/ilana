@@ -1,0 +1,15 @@
+# Ilana code owners.
+# Replace OWNER with the actual GitHub handle or team before publishing.
+
+*                       @OWNER
+
+# The kernel and the gates change behaviour everywhere. Extra care.
+/skill/kernel/          @OWNER
+/skill/gates/           @OWNER
+/skill/SKILL.md         @OWNER
+
+# Tooling that runs on contributors' machines.
+/bin/                   @OWNER
+/install.sh             @OWNER
+/.github/workflows/     @OWNER
+/skill/instruments/     @OWNER

@@ -1,0 +1,62 @@
+name: Coding agent support
+description: Ask for, or contribute, support for a coding agent Ilana does not cover.
+labels: ["adapter", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Adapters are the highest-value and easiest-to-review contribution. If you can write it
+        yourself, open a pull request instead; see `adapters/README.md` for the shape.
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent name and version
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Documentation URL
+    validations:
+      required: true
+
+  - type: textarea
+    id: mechanism
+    attributes:
+      label: How does it load instructions
+      description: >
+        A skills directory? A single instruction file? A rules directory? A system prompt box?
+        Give the exact path if you know it.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: subagents
+    attributes:
+      label: Does it support sub-agents or delegation
+      options:
+        - "Yes"
+        - "No"
+        - "Partial"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: filesystem
+    attributes:
+      label: Can it read and write files
+      options:
+        - "Read and write"
+        - "Read only"
+        - "Neither"
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Size limits on instruction files, unusual behaviour, gotchas.

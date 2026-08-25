@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build and temp
+dist/
+build/
+*.log
+*.tmp
+*.bak
+
+# Ilana runtime state, generated per project by `ilana init`.
+# This repository is the skill, not a project running it.
+/.ilana/
+
+# Local installer state
+/.ilana-src/

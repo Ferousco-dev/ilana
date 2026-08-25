@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+title: "Ìlànà: a software engineering process operating system for coding agents"
+message: "If you use Ìlànà in research or teaching, please cite it."
+type: software
+authors:
+  - name: "Ìlànà contributors"
+repository-code: "https://github.com/OWNER/ilana"
+url: "https://github.com/OWNER/ilana"
+abstract: >-
+  Ìlànà is a gated software engineering process definition for AI coding agents. It
+  implements eleven lifecycle phases, nine quality gates with criteria scaled by a
+  five-level rigour dial, thirteen specialist agent roles with enforced separation of
+  duties, ten cross-phase protocols, and a set of dependency-free measurement
+  instruments. It is derived from SEN102/212 Software Engineering Process at Obafemi
+  Awolowo University, Ile-Ife, and aligns with ISO/IEC 12207, IEEE 830, IEEE 1016,
+  IEEE 829, CMMI and the ACM/IEEE Software Engineering Code of Ethics. It is
+  host-agnostic and ships adapters for Claude Code, OpenAI Codex, Cursor, Windsurf,
+  Gemini CLI, GitHub Copilot, Continue, Aider and OpenCode.
+keywords:
+  - software engineering
+  - software process
+  - requirements engineering
+  - software testing
+  - software quality assurance
+  - software configuration management
+  - process improvement
+  - CMMI
+  - ISO/IEC 12207
+  - AI coding agents
+  - agent skills
+  - software engineering education
+license: MIT
+version: 1.0.0
+date-released: "2026-08-25"
+references:
+  - type: generic
+    title: "SEN102/212 Software Engineering Process"
+    institution:
+      name: "Obafemi Awolowo University, Ile-Ife"
+    authors:
+      - name: "Onifade M. T."
+      - name: "Ugwu F. C."
+      - name: "Ubochi Chibueze Nmamouh"

@@ -1,0 +1,54 @@
+Ìlànà
+=====
+
+Copyright (c) 2026 Ìlànà contributors. Licensed under the MIT License.
+
+ORIGIN
+------
+
+The engineering content of this project is derived from lecture material for:
+
+    SEN102/212 Software Engineering Process
+    Department of Software Engineering
+    Obafemi Awolowo University, Ile-Ife, Nigeria
+
+Lecturers whose material informs this work:
+    Dr (Mrs) Onifade M. T.
+    F. C. Ugwu
+    Ubochi Chibueze Nmamouh
+
+The complete original lecture deck is included in this repository under source/
+for reference and attribution. Copyright in that material remains with its
+authors and with Obafemi Awolowo University. It is included here for
+educational reference and attribution, not as a claim of ownership.
+
+The structure built on top of that material, being the kernel, the constitution,
+the gate system, the agent fleet, the protocols, the instruments, the refusal
+protocol, the mode system, the ledger specification and the tooling, is original
+work by the Ìlànà contributors and is MIT licensed.
+
+STANDARDS REFERENCED
+--------------------
+
+Ìlànà refers to the following standards. It reproduces neither their text nor
+their normative content; it describes how to work in conformance with them.
+
+    ISO/IEC 12207   Software Life Cycle Processes
+    ISO/IEC 25010   Systems and software Quality Requirements and Evaluation
+    IEEE 830        Software Requirements Specifications
+    IEEE 1016       Software Design Descriptions
+    IEEE 829        Software Test Documentation
+    CMMI            Capability Maturity Model Integration (SEI, Carnegie Mellon)
+    ACM/IEEE        Software Engineering Code of Ethics and Professional Practice
+
+CMMI is a registered mark of Carnegie Mellon University. Ìlànà produces
+indicative self-assessments using CMMI vocabulary; it does not perform, and its
+output does not constitute, a formal SEI appraisal.
+
+TRADEMARKS
+----------
+
+Product and tool names referenced in this documentation (including Git, GitHub,
+GitLab, Jira, Trello, Jenkins, Docker, Kubernetes, Selenium, Ansible and others)
+are the trademarks of their respective owners. They are referenced descriptively.
+Ìlànà is not affiliated with, endorsed by, or sponsored by any of them.

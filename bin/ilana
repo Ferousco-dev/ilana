@@ -1,0 +1,508 @@
+#!/bin/sh
+# ilana - install, update and verify the Ilana software engineering process skill.
+#
+# POSIX sh. No dependencies beyond git and either curl or wget for update checks.
+#
+#   ilana install [--link|--copy] [--target DIR] [--all]
+#   ilana update  [--quiet] [--force]
+#   ilana check   [--quiet] [--max-age DAYS]
+#   ilana doctor
+#   ilana channel [stable|edge]
+#   ilana pin VERSION | ilana unpin
+#   ilana autoupdate --enable [--interval daily|weekly] | --disable
+#   ilana init [--project NAME] [--rigour N]
+#   ilana uninstall
+#   ilana version
+
+set -eu
+
+REPO_SLUG="OWNER/ilana"
+RAW_BASE="https://raw.githubusercontent.com/${REPO_SLUG}"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ilana"
+STATE_FILE="$CONFIG_DIR/state.json"
+
+SELF="$0"
+case "$SELF" in
+  /*) ;;
+  *) SELF="$PWD/$SELF" ;;
+esac
+BIN_DIR="$(dirname "$SELF")"
+REPO_ROOT="$(cd "$BIN_DIR/.." && pwd)"
+SKILL_SRC="$REPO_ROOT/skill"
+
+# ---------------------------------------------------------------- output ----
+
+say()  { printf '%s\n' "$*"; }
+warn() { printf 'ilana: %s\n' "$*" >&2; }
+die()  { printf 'ilana: %s\n' "$*" >&2; exit 1; }
+
+QUIET=0
+qsay() { [ "$QUIET" -eq 1 ] || say "$*"; }
+
+# ----------------------------------------------------------------- state ----
+
+read_state() {
+  key="$1"; default="${2:-}"
+  [ -f "$STATE_FILE" ] || { printf '%s' "$default"; return; }
+  value=$(sed -n 's/.*"'"$key"'"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$STATE_FILE" | head -1)
+  [ -n "$value" ] || value="$default"
+  printf '%s' "$value"
+}
+
+write_state() {
+  mkdir -p "$CONFIG_DIR"
+  cat > "$STATE_FILE" <<EOF
+{
+  "installed_version": "$(local_version)",
+  "install_method": "${1:-$(read_state install_method unknown)}",
+  "source": "${2:-$(read_state source "$REPO_ROOT")}",
+  "target": "${3:-$(read_state target "")}",
+  "channel": "${4:-$(read_state channel stable)}",
+  "pinned": "${5:-$(read_state pinned false)}",
+  "last_checked": "$(date +%Y-%m-%d)"
+}
+EOF
+}
+
+local_version() {
+  if [ -f "$REPO_ROOT/VERSION" ]; then
+    tr -d ' \n' < "$REPO_ROOT/VERSION"
+  else
+    printf 'unknown'
+  fi
+}
+
+# ----------------------------------------------------------------- hosts ----
+# Where each supported coding agent looks for skills.
+
+host_targets() {
+  say "claude-code:$HOME/.claude/skills/ilana"
+  say "codex:$HOME/.codex/skills/ilana"
+  say "opencode:$HOME/.config/opencode/skills/ilana"
+  say "generic:$HOME/.config/ilana/skill"
+}
+
+default_target() {
+  printf '%s' "$HOME/.claude/skills/ilana"
+}
+
+# --------------------------------------------------------------- install ----
+
+do_install() {
+  method="link"
+  target=""
+  install_all=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --link) method="link" ;;
+      --copy) method="copy" ;;
+      --all) install_all=1 ;;
+      --target) shift; target="${1:-}" ;;
+      *) die "unknown option $1" ;;
+    esac
+    shift
+  done
+
+  [ -d "$SKILL_SRC" ] || die "cannot find skill/ next to bin/. Run this from a clone of the repository."
+
+  if [ "$install_all" -eq 1 ]; then
+    host_targets | while IFS=: read -r host path; do
+      install_one "$method" "$path" "$host"
+    done
+    write_state "$method" "$REPO_ROOT" "multiple"
+    return 0
+  fi
+
+  [ -n "$target" ] || target="$(default_target)"
+  install_one "$method" "$target" "custom"
+  write_state "$method" "$REPO_ROOT" "$target"
+}
+
+install_one() {
+  method="$1"; target="$2"; label="$3"
+  parent="$(dirname "$target")"
+  mkdir -p "$parent"
+
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    if [ -L "$target" ]; then
+      rm -f "$target"
+    else
+      backup="$target.backup.$(date +%Y%m%d%H%M%S)"
+      mv "$target" "$backup"
+      warn "existing installation moved to $backup"
+    fi
+  fi
+
+  if [ "$method" = "link" ]; then
+    ln -s "$SKILL_SRC" "$target"
+    say "linked  $label  ->  $target"
+    say "        updates now arrive with: git -C $REPO_ROOT pull"
+  else
+    mkdir -p "$target"
+    (cd "$SKILL_SRC" && tar cf - .) | (cd "$target" && tar xf -)
+    say "copied  $label  ->  $target"
+  fi
+}
+
+# ---------------------------------------------------------------- update ----
+
+fetch() {
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL --max-time 15 "$1" 2>/dev/null
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- --timeout=15 "$1" 2>/dev/null
+  else
+    return 1
+  fi
+}
+
+remote_version() {
+  branch="main"
+  [ "$(read_state channel stable)" = "stable" ] && branch="main"
+  fetch "$RAW_BASE/$branch/VERSION" | tr -d ' \n'
+}
+
+do_check() {
+  max_age=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --quiet) QUIET=1 ;;
+      --max-age) shift; max_age="${1:-0}" ;;
+      *) die "unknown option $1" ;;
+    esac
+    shift
+  done
+
+  if [ "$max_age" -gt 0 ] && [ -f "$CONFIG_DIR/last_checked" ]; then
+    last="$(cat "$CONFIG_DIR/last_checked" 2>/dev/null || echo "")"
+    today="$(date +%Y-%m-%d)"
+    [ "$last" = "$today" ] && exit 0
+  fi
+
+  mkdir -p "$CONFIG_DIR"
+  date +%Y-%m-%d > "$CONFIG_DIR/last_checked"
+
+  lv="$(local_version)"
+  rv="$(remote_version || true)"
+
+  if [ -z "${rv:-}" ]; then
+    qsay "ilana $lv installed. update check unavailable (offline or unreachable)."
+    exit 0
+  fi
+
+  if [ "$lv" = "$rv" ]; then
+    qsay "ilana $lv is current"
+  else
+    say "ilana $lv installed, $rv available. run: ilana update"
+  fi
+}
+
+do_update() {
+  force=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --quiet) QUIET=1 ;;
+      --force) force=1 ;;
+      *) die "unknown option $1" ;;
+    esac
+    shift
+  done
+
+  if [ "$(read_state pinned false)" != "false" ] && [ "$force" -eq 0 ]; then
+    say "ilana is pinned to $(read_state pinned). run 'ilana unpin' or 'ilana update --force'."
+    exit 0
+  fi
+
+  src="$(read_state source "$REPO_ROOT")"
+  [ -d "$src/.git" ] || die "source at $src is not a git clone. reinstall with: ilana install --link"
+
+  before="$(local_version)"
+  branch="main"
+  [ "$(read_state channel stable)" = "edge" ] && branch="main"
+
+  qsay "updating from $src ($branch)"
+  git -C "$src" fetch --quiet origin "$branch" || die "fetch failed"
+  git -C "$src" merge --ff-only "origin/$branch" >/dev/null 2>&1 || {
+    warn "cannot fast-forward; you have local commits in $src"
+    warn "resolve manually, or reinstall with a clean clone"
+    exit 1
+  }
+
+  after="$(tr -d ' \n' < "$src/VERSION" 2>/dev/null || echo unknown)"
+  write_state
+
+  if [ "$(read_state install_method link)" = "copy" ]; then
+    target="$(read_state target "$(default_target)")"
+    [ -d "$target" ] && install_one copy "$target" "refresh"
+  fi
+
+  if [ "$before" = "$after" ]; then
+    qsay "already current at $after"
+  else
+    say "ilana $before -> $after"
+    if [ -f "$src/CHANGELOG.md" ]; then
+      say ""
+      sed -n '/^## \[/,/^## \[/p' "$src/CHANGELOG.md" | head -25
+    fi
+  fi
+}
+
+# ---------------------------------------------------------------- doctor ----
+
+do_doctor() {
+  say "ILANA DOCTOR"
+  say ""
+  say "  version:        $(local_version)"
+  say "  repository:     $REPO_ROOT"
+  say "  install method: $(read_state install_method 'not installed')"
+  say "  channel:        $(read_state channel stable)"
+  pin="$(read_state pinned false)"
+  [ "$pin" = "false" ] && say "  pinned:         no" || say "  pinned:         $pin"
+  say "  last checked:   $(read_state last_checked never)"
+  say ""
+
+  say "  skill payload:"
+  missing=0
+  for f in SKILL.md kernel/KERNEL.md kernel/constitution.md gates/GATES.md agents/FLEET.md; do
+    if [ -f "$SKILL_SRC/$f" ]; then
+      say "    ok    $f"
+    else
+      say "    MISSING $f"
+      missing=$((missing + 1))
+    fi
+  done
+  phases=$(find "$SKILL_SRC/phases" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+  agents=$(find "$SKILL_SRC/agents" -name AGENT.md 2>/dev/null | wc -l | tr -d ' ')
+  say "    phases: $phases (expected 11)"
+  say "    agents: $agents (expected 13)"
+  say ""
+
+  say "  hosts:"
+  host_targets | while IFS=: read -r host path; do
+    if [ -L "$path" ]; then
+      say "    linked  $host  $path -> $(readlink "$path")"
+    elif [ -d "$path" ]; then
+      say "    copied  $host  $path"
+    else
+      say "    absent  $host  $path"
+    fi
+  done
+  say ""
+
+  say "  overrides:"
+  if [ -d "$CONFIG_DIR/overrides" ]; then
+    find "$CONFIG_DIR/overrides" -type f 2>/dev/null | sed "s|$CONFIG_DIR/overrides/|    active  |" || true
+  else
+    say "    none"
+  fi
+  say ""
+
+  say "  instruments:"
+  if command -v python3 >/dev/null 2>&1; then
+    say "    ok      python3 $(python3 --version 2>&1 | cut -d' ' -f2)"
+  else
+    say "    absent  python3 (instruments degrade to manual procedures)"
+  fi
+  command -v git >/dev/null 2>&1 && say "    ok      git" || say "    absent  git (updates unavailable)"
+  say ""
+
+  [ "$missing" -eq 0 ] || die "installation incomplete"
+  say "  healthy"
+}
+
+# -------------------------------------------------------------- channels ----
+
+do_channel() {
+  case "${1:-}" in
+    stable|edge)
+      write_state "" "" "" "$1" ""
+      say "channel set to $1"
+      ;;
+    "") say "channel: $(read_state channel stable)" ;;
+    *) die "channel must be stable or edge" ;;
+  esac
+}
+
+do_pin() {
+  [ -n "${1:-}" ] || die "usage: ilana pin VERSION"
+  write_state "" "" "" "" "$1"
+  say "pinned to $1. run 'ilana unpin' to resume updates."
+}
+
+do_unpin() {
+  write_state "" "" "" "" "false"
+  say "unpinned"
+}
+
+# ------------------------------------------------------------ autoupdate ----
+
+do_autoupdate() {
+  action=""
+  interval="weekly"
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --enable) action="enable" ;;
+      --disable) action="disable" ;;
+      --interval) shift; interval="${1:-weekly}" ;;
+      *) die "unknown option $1" ;;
+    esac
+    shift
+  done
+  [ -n "$action" ] || die "usage: ilana autoupdate --enable [--interval daily|weekly] | --disable"
+
+  seconds=604800
+  [ "$interval" = "daily" ] && seconds=86400
+
+  case "$(uname -s)" in
+    Darwin)
+      plist="$HOME/Library/LaunchAgents/dev.ilana.update.plist"
+      if [ "$action" = "disable" ]; then
+        launchctl unload "$plist" 2>/dev/null || true
+        rm -f "$plist"
+        say "autoupdate disabled"
+        return 0
+      fi
+      mkdir -p "$(dirname "$plist")"
+      cat > "$plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>dev.ilana.update</string>
+  <key>ProgramArguments</key>
+  <array><string>$SELF</string><string>update</string><string>--quiet</string></array>
+  <key>StartInterval</key><integer>$seconds</integer>
+  <key>RunAtLoad</key><false/>
+</dict>
+</plist>
+EOF
+      launchctl unload "$plist" 2>/dev/null || true
+      launchctl load "$plist" 2>/dev/null || warn "could not load launch agent; it will start at next login"
+      say "autoupdate enabled ($interval) via launchd"
+      ;;
+    Linux)
+      unit_dir="$HOME/.config/systemd/user"
+      if [ "$action" = "disable" ]; then
+        systemctl --user disable --now ilana-update.timer 2>/dev/null || true
+        rm -f "$unit_dir/ilana-update.timer" "$unit_dir/ilana-update.service"
+        say "autoupdate disabled"
+        return 0
+      fi
+      mkdir -p "$unit_dir"
+      cat > "$unit_dir/ilana-update.service" <<EOF
+[Unit]
+Description=Ilana skill update
+
+[Service]
+Type=oneshot
+ExecStart=$SELF update --quiet
+EOF
+      cat > "$unit_dir/ilana-update.timer" <<EOF
+[Unit]
+Description=Ilana skill update timer
+
+[Timer]
+OnCalendar=$interval
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+      systemctl --user daemon-reload 2>/dev/null || true
+      systemctl --user enable --now ilana-update.timer 2>/dev/null \
+        || warn "could not enable timer; enable it manually with systemctl --user"
+      say "autoupdate enabled ($interval) via systemd"
+      ;;
+    *)
+      warn "no scheduler support for $(uname -s)."
+      say "add this to your shell profile instead:"
+      say "  $SELF check --quiet --max-age 7 >/dev/null 2>&1 &"
+      ;;
+  esac
+}
+
+# ------------------------------------------------------------------ init ----
+
+do_init() {
+  project="$(basename "$PWD")"
+  rigour=3
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --project) shift; project="${1:-$project}" ;;
+      --rigour) shift; rigour="${1:-3}" ;;
+      *) die "unknown option $1" ;;
+    esac
+    shift
+  done
+  ledger="$SKILL_SRC/instruments/scripts/ledger.py"
+  [ -f "$ledger" ] || die "cannot find ledger.py"
+  command -v python3 >/dev/null 2>&1 || die "python3 required for ilana init"
+  python3 "$ledger" init --project "$project" --rigour "$rigour"
+}
+
+# ------------------------------------------------------------- uninstall ----
+
+do_uninstall() {
+  say "removing installed skill links and copies. project .ilana/ ledgers are never touched."
+  host_targets | while IFS=: read -r host path; do
+    if [ -L "$path" ] || [ -d "$path" ]; then
+      rm -rf "$path"
+      say "  removed $host  $path"
+    fi
+  done
+  target="$(read_state target "")"
+  if [ -n "$target" ] && { [ -L "$target" ] || [ -d "$target" ]; }; then
+    rm -rf "$target"
+    say "  removed custom target $target"
+  fi
+  rm -rf "$CONFIG_DIR"
+  say "  removed $CONFIG_DIR"
+  say "done. your .ilana/ process ledgers are untouched."
+}
+
+# ------------------------------------------------------------------ help ----
+
+usage() {
+  cat <<'EOF'
+ilana - the software engineering process skill
+
+  ilana install [--link|--copy] [--target DIR] [--all]
+        --link    symlink the skill (default; updates arrive with git pull)
+        --copy    copy the files (for hosts that will not follow symlinks)
+        --all     install to every known agent location
+        --target  install to a specific directory
+
+  ilana update [--quiet] [--force]     pull upstream and refresh installs
+  ilana check  [--quiet] [--max-age N] compare local and upstream versions
+  ilana doctor                         verify the installation
+  ilana channel [stable|edge]          show or set the update channel
+  ilana pin VERSION | ilana unpin      hold at a version
+  ilana autoupdate --enable [--interval daily|weekly] | --disable
+  ilana init [--project NAME] [--rigour N]   create .ilana/ in this project
+  ilana uninstall                      remove installs (never touches .ilana/)
+  ilana version
+
+Documentation: https://github.com/OWNER/ilana
+EOF
+}
+
+# ------------------------------------------------------------------ main ----
+
+cmd="${1:-help}"
+[ $# -gt 0 ] && shift || true
+
+case "$cmd" in
+  install)    do_install "$@" ;;
+  update)     do_update "$@" ;;
+  check)      do_check "$@" ;;
+  doctor)     do_doctor ;;
+  channel)    do_channel "${1:-}" ;;
+  pin)        do_pin "${1:-}" ;;
+  unpin)      do_unpin ;;
+  autoupdate) do_autoupdate "$@" ;;
+  init)       do_init "$@" ;;
+  uninstall)  do_uninstall ;;
+  version|-v|--version) say "ilana $(local_version)" ;;
+  help|-h|--help) usage ;;
+  *) warn "unknown command: $cmd"; usage; exit 1 ;;
+esac

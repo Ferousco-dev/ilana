@@ -1,0 +1,25 @@
+{
+  // Ilana markdown conventions. Deliberately permissive where the content needs it.
+  "default": true,
+
+  // Long tables and URLs are unavoidable in reference material.
+  "MD013": { "line_length": 100, "tables": false, "code_blocks": false, "headings": false },
+
+  // Multiple H1s occur in files that embed template examples.
+  "MD025": false,
+
+  // Duplicate headings are intentional across phase sections.
+  "MD024": { "siblings_only": true },
+
+  // Bare URLs appear in the reading list by design.
+  "MD034": false,
+
+  // Emphasis used as a heading is intentional in a few tables.
+  "MD036": false,
+
+  // The first line of a file is not always a top-level heading (frontmatter).
+  "MD041": false,
+
+  // Inline HTML is not used, but comments in templates are.
+  "MD033": { "allowed_elements": ["br"] }
+}

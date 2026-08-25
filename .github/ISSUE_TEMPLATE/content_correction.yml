@@ -1,0 +1,54 @@
+name: Content correction
+description: Something in the engineering content is wrong, unclear, or out of date.
+labels: ["content", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ilana's engineering content should be correct. Corrections are welcome, including
+        corrections to material derived from the source course.
+
+  - type: input
+    id: file
+    attributes:
+      label: File
+      placeholder: "skill/phases/05-verification/reference.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What it currently says
+      description: Quote it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: correct
+    attributes:
+      label: What it should say
+    validations:
+      required: true
+
+  - type: textarea
+    id: authority
+    attributes:
+      label: On what authority
+      description: >
+        A standard with a clause reference, a textbook with a page, an authoritative source, or
+        direct professional experience. Be specific enough that a reviewer can check.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: How wrong is it
+      options:
+        - "Factually incorrect: would lead an engineer astray"
+        - "Misleading: technically defensible but reads wrongly"
+        - "Unclear: correct but hard to follow"
+        - "Out of date: was correct, no longer is"
+    validations:
+      required: true

@@ -1,0 +1,66 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate before releasing
+        run: |
+          sh tests/validate.sh
+          make no-emdash
+          python3 -m py_compile skill/instruments/scripts/*.py
+          for f in bin/ilana install.sh; do sh -n "$f"; done
+
+      - name: Tag matches VERSION
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          file="$(cat VERSION)"
+          if [ "$tag" != "$file" ]; then
+            echo "tag $tag does not match VERSION $file" >&2
+            exit 1
+          fi
+          echo "ok   v$file"
+
+      - name: Extract changelog section
+        id: notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { p=1; next }
+            p && /^## \[/ { exit }
+            p { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+          if [ ! -s RELEASE_NOTES.md ]; then
+            echo "No changelog entry found for $version." > RELEASE_NOTES.md
+          fi
+          cat RELEASE_NOTES.md
+
+      - name: Build the skill archive
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          tar czf "ilana-skill-$version.tar.gz" -C skill .
+          zip -rq "ilana-skill-$version.zip" skill
+          sha256sum "ilana-skill-$version.tar.gz" "ilana-skill-$version.zip" > checksums.txt
+          cat checksums.txt
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          files: |
+            ilana-skill-*.tar.gz
+            ilana-skill-*.zip
+            checksums.txt
+          generate_release_notes: false

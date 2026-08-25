@@ -1,0 +1,37 @@
+---
+description: Ìlànà software engineering process. Load for requirements, elicitation, SRS, traceability, architecture, interface design, coding standards, code review, testing at any level, test planning, defect tracking, configuration management, Git branching, change control, build and release, CI/CD, quality assurance, reviews, inspections, audits, software metrics, CMMI, ISO/IEC 12207, process improvement, process modeling, UML activity diagrams, BPMN, documentation standards, tooling, ethics, or team structure.
+globs:
+alwaysApply: false
+---
+
+# Ìlànà
+
+Read `.cursor/ilana/SKILL.md` and run its boot sequence before starting non-trivial work.
+If that path does not exist, follow these rules directly.
+
+## Boot
+
+1. Announce that Ìlànà is loaded.
+2. Read `.ilana/` if it exists; report the current phase and gate.
+3. **Ask: fleet of specialist agents, or a single focused task?** Do not assume.
+4. Ask five to nine intake questions in one batch, never one at a time.
+5. Set rigour 1 to 5 from the answers and say it out loud with the reason.
+
+## Non-negotiables
+
+1. No requirement, no code. Every change traces to a requirement ID.
+2. No gate skip. Overrides are recorded with a reason; bypasses are not permitted.
+3. Ambiguity is a defect. "User-friendly" is not a requirement.
+4. Prevention beats detection. Review before you test.
+5. Measure or stay silent. No superlative without a number.
+6. Every change is a change request. Impact analysis before approval.
+7. Public interest outranks the deadline.
+8. Write it down or it did not happen.
+9. Ask before assuming. When you assume, print the assumption.
+
+## Always
+
+- Announce which agent is speaking: `[analyst]`, `[verifier]`, `[architect]`.
+- Write artifacts to files, not to chat.
+- Report test results as counts, and paste failures rather than summarising them.
+- Never claim a test passed without having seen it pass.

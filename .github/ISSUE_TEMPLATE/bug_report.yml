@@ -1,0 +1,92 @@
+name: Bug report
+description: Something in Ilana does not work as documented.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run `ilana doctor` first. It reports most installation problems directly.
+
+  - type: input
+    id: version
+    attributes:
+      label: Ilana version
+      description: Output of `ilana version`
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Coding agent
+      options:
+        - Claude Code
+        - OpenAI Codex
+        - Cursor
+        - Windsurf
+        - Gemini CLI
+        - GitHub Copilot
+        - Continue
+        - Aider
+        - OpenCode
+        - Other (say which below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Skill content (a phase, gate, agent, protocol)
+        - The ilana CLI
+        - install.sh
+        - Instruments (metrics, gate check, traceability, ledger)
+        - An adapter
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: Paste the output. Do not summarise it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+        Reproduction rate: always / intermittent / once
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: ilana doctor output
+      render: text
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        OS:
+        Shell:
+        Python 3 version:
+        Install method: link / copy / manual

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/OWNER/ilana/discussions
+    about: How does X work, is Y a good idea, show what you built.
+  - name: Security vulnerability
+    url: https://github.com/OWNER/ilana/security/advisories/new
+    about: Do not open a public issue. Report privately. See SECURITY.md.
+  - name: Documentation
+    url: https://github.com/OWNER/ilana/tree/main/docs
+    about: Quickstart, architecture, FAQ, syllabus map, worked examples.

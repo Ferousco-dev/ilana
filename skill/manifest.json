@@ -1,0 +1,54 @@
+{
+  "name": "ilana",
+  "version": "1.0.0",
+  "title": "Ìlànà",
+  "tagline": "A software engineering process operating system for coding agents.",
+  "license": "MIT",
+  "homepage": "https://github.com/OWNER/ilana",
+  "origin": {
+    "course": "SEN102/212 Software Engineering Process",
+    "institution": "Obafemi Awolowo University, Ile-Ife",
+    "department": "Software Engineering"
+  },
+  "entry": "SKILL.md",
+  "requires": {
+    "filesystem": "recommended",
+    "python3": "optional, for instruments",
+    "subagents": "optional, for parallel fleet mode",
+    "network": "never, except `ilana update`"
+  },
+  "structure": {
+    "kernel": "invariant mechanism: constitution, state machine, ledger spec, refusal protocol",
+    "modes": "FLEET, TASK, AUDIT, TUTOR, DOCTOR, DRILL",
+    "gates": "G0 through G8, with rigour-scaled criteria",
+    "phases": "11 lifecycle phases, each with PHASE, checklist, questions, antipatterns, gate, reference, templates",
+    "agents": "13 role cards with charters, refusals and handoff contracts",
+    "protocols": "10 cross-phase procedures",
+    "instruments": "metrics engine, gate checker, traceability checker, ledger tool",
+    "references": "standards, CMMI, ethics, methodology, tooling, reading list",
+    "interrogation": "intake questions and 12 assessment banks",
+    "update": "self-update mechanism"
+  },
+  "counts": {
+    "phases": 11,
+    "agents": 13,
+    "gates": 9,
+    "protocols": 10,
+    "modes": 6,
+    "constitution_articles": 16
+  },
+  "tags": [
+    "software-engineering", "sdlc", "process", "requirements-engineering",
+    "software-design", "ui-design", "coding-standards", "software-testing",
+    "test-automation", "defect-tracking", "software-configuration-management",
+    "git", "change-management", "build-management", "release-management",
+    "software-quality-assurance", "code-review", "inspection", "audit",
+    "software-metrics", "cmmi", "iso-iec-12207", "ieee-830", "ieee-1016",
+    "ieee-829", "process-improvement", "process-modeling", "uml",
+    "activity-diagram", "bpmn", "documentation-standards", "case-tools",
+    "jira", "trello", "jenkins", "github-actions", "agile", "scrum", "kanban",
+    "devops", "ci-cd", "plan-driven", "software-ethics", "acm-ieee",
+    "team-dynamics", "traceability", "quality-gates", "technical-debt",
+    "engineering-management"
+  ]
+}

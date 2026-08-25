@@ -1,0 +1,196 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  structure:
+    name: structure and house style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Structural validation
+        run: sh tests/validate.sh
+
+      - name: No em dashes
+        run: make no-emdash
+
+  shell:
+    name: shell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: POSIX syntax check
+        run: |
+          for f in bin/ilana install.sh skill/update/check-update.sh tests/validate.sh; do
+            sh -n "$f" && echo "ok   $f"
+          done
+
+      - name: shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck -S warning bin/ilana install.sh skill/update/check-update.sh tests/validate.sh
+
+  python:
+    name: instruments
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.8", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Compile
+        run: python -m py_compile skill/instruments/scripts/*.py
+
+      - name: Metrics engine runs
+        run: python skill/instruments/scripts/metrics.py --repo . --json > /dev/null
+
+      - name: Gate checker runs for every gate
+        run: |
+          for g in G0 G1 G2 G3 G4 G5 G6 G7 G8; do
+            python skill/instruments/scripts/gate_check.py --gate "$g" --rigour 3 --repo . > /dev/null
+            echo "ok   $g"
+          done
+
+      - name: Ledger round trip
+        run: |
+          tmp=$(mktemp -d)
+          cd "$tmp"
+          python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" init --project ci --rigour 3
+          python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" next-id --prefix REQ
+          python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" gate --gate G1 --verdict PASS --owner analyst --evidence docs/srs.md
+          python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" status
+          python "$GITHUB_WORKSPACE/skill/instruments/scripts/ledger.py" validate
+
+      - name: Traceability checker handles an absent matrix
+        run: |
+          python skill/instruments/scripts/traceability.py --file /nonexistent.csv || true
+
+  cli:
+    name: cli
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: version
+        run: ./bin/ilana version
+
+      - name: help
+        run: ./bin/ilana help
+
+      - name: doctor
+        run: ./bin/ilana doctor
+
+      - name: install by symlink and verify
+        run: |
+          ./bin/ilana install --link --target "$HOME/test-skills/ilana"
+          test -L "$HOME/test-skills/ilana"
+          test -f "$HOME/test-skills/ilana/SKILL.md"
+          echo "ok   symlink install"
+
+      - name: install by copy and verify
+        run: |
+          ./bin/ilana install --copy --target "$HOME/test-copy/ilana"
+          test -f "$HOME/test-copy/ilana/SKILL.md"
+          test -d "$HOME/test-copy/ilana/phases"
+          echo "ok   copy install"
+
+      - name: uninstall leaves ledgers alone
+        run: |
+          mkdir -p /tmp/proj/.ilana && echo keep > /tmp/proj/.ilana/ledger.md
+          ./bin/ilana uninstall > /dev/null
+          test -f /tmp/proj/.ilana/ledger.md
+          echo "ok   ledgers untouched"
+
+  markdown:
+    name: markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: markdownlint
+        run: |
+          npm install -g markdownlint-cli2
+          markdownlint-cli2 "**/*.md" "#source" "#node_modules" || true
+
+  frontmatter:
+    name: skill frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: SKILL.md frontmatter is valid and complete
+        run: |
+          python - <<'PY'
+          import sys, re, pathlib
+          text = pathlib.Path("skill/SKILL.md").read_text(encoding="utf-8")
+          if not text.startswith("---\n"):
+              sys.exit("SKILL.md must open with YAML frontmatter")
+          end = text.index("\n---\n", 3)
+          fm = text[4:end]
+          problems = []
+          if not re.search(r"^name:\s*ilana\s*$", fm, re.M):
+              problems.append("name must be exactly 'ilana'")
+          if not re.search(r"^description:", fm, re.M):
+              problems.append("description is required")
+          desc = fm[fm.index("description:"):]
+          if len(desc) < 300:
+              problems.append("description is too short to be discoverable")
+          for term in ["requirements", "testing", "quality", "FLEET", "TASK"]:
+              if term.lower() not in text.lower():
+                  problems.append("SKILL.md should mention " + term)
+          if problems:
+              sys.exit("\n".join("  - " + p for p in problems))
+          print("frontmatter ok, description %d chars" % len(desc))
+          PY
+
+      - name: manifest.json is valid JSON
+        run: python -c "import json;d=json.load(open('skill/manifest.json'));print('manifest ok,',len(d['tags']),'tags')"
+
+      - name: VERSION matches SKILL.md and manifest
+        run: |
+          python - <<'PY'
+          import json, pathlib, re, sys
+          version = pathlib.Path("VERSION").read_text().strip()
+          manifest = json.loads(pathlib.Path("skill/manifest.json").read_text())
+          skill = pathlib.Path("skill/SKILL.md").read_text()
+          problems = []
+          if manifest["version"] != version:
+              problems.append("manifest.json version %s != VERSION %s" % (manifest["version"], version))
+          m = re.search(r"version:\s*([0-9.]+)", skill)
+          if not m or m.group(1) != version:
+              problems.append("SKILL.md metadata version != VERSION %s" % version)
+          if problems:
+              sys.exit("\n".join(problems))
+          print("version %s consistent everywhere" % version)
+          PY

@@ -1,0 +1,50 @@
+name: links
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: internal links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Every internal reference resolves
+        run: |
+          python - <<'PY'
+          import os, re, sys, pathlib
+
+          root = pathlib.Path(".")
+          # Paths referenced inside skill content, relative to skill/
+          skill = root / "skill"
+          bad = []
+          pattern = re.compile(r"`((?:kernel|modes|gates|phases|agents|protocols|instruments|references|interrogation|assessments|update)/[A-Za-z0-9_./<>-]+)`")
+
+          for md in skill.rglob("*.md"):
+              text = md.read_text(encoding="utf-8", errors="replace")
+              for m in pattern.finditer(text):
+                  ref = m.group(1)
+                  if "<" in ref or ">" in ref or ref.endswith("/"):
+                      continue      # templated path, not literal
+                  target = skill / ref
+                  if not target.exists():
+                      bad.append("%s -> %s" % (md.relative_to(root), ref))
+
+          if bad:
+              print("unresolved internal references:")
+              for b in sorted(set(bad)):
+                  print("  " + b)
+              sys.exit(1)
+          print("all internal references resolve")
+          PY
