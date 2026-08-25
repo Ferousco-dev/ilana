@@ -20,17 +20,22 @@ University. The complete deck is included in `source/` for reference and attribu
 
 ## Maintainers
 
-<!-- Add yourself here when you become a maintainer. -->
+- [@Ferousco-dev](https://github.com/Ferousco-dev) - created Ìlànà; software engineering student,
+  Obafemi Awolowo University, Ile-Ife
 
 ## Contributors
 
+None yet. This is a new project and the first pull request is genuinely welcome.
+
+The most useful places to start are listed in `CONTRIBUTING.md`: a host adapter for a coding agent
+Ìlànà does not yet cover, a gate criterion that has actually caught something for you, or an
+anti-pattern you have watched happen on a real project.
+
 <!--
-Add yourself in the same pull request as your first contribution, in this format:
+Add yourself here in the same pull request as your first contribution:
 
 - Name or handle (link, optional) - what you contributed
 -->
-
-Thank you to everyone who has argued with a gate criterion and made it better.
 
 ## How to be listed
 

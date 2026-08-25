@@ -1,5 +1,10 @@
 <div align="center">
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+  <img src="assets/logo.png" alt="Ìlànà" width="190">
+</picture>
+
 # ÌLÀNÀ
 
 ### A software engineering process operating system for coding agents

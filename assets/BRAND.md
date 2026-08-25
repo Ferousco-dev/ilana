@@ -44,18 +44,30 @@ Avoid: teal-to-purple gradients, neon, glassmorphism, drop shadows, anything tha
 
 ---
 
-## Files this repository expects
+## The mark
 
-Drop generated assets here with these exact names and the README wires up automatically.
+Concept A from `LOGO-PROMPTS.md`: five nested pointed arches receding into depth, forest green to
+palm green, with the innermost doorway filled in ochre. The posts carry a notched pattern drawn
+from carved Yoruba house posts and adire cloth geometry.
+
+It reads three ways at once, which is why it was chosen: an ordered passage through thresholds,
+the nine gates of the process, and a doorway with light behind it.
+
+## Files
 
 | File | Size | Background | Used in |
 | --- | --- | --- | --- |
-| `logo.svg` | vector | transparent | preferred everywhere |
-| `logo.png` | 1024 x 1024 | transparent | fallback |
-| `logo-dark.png` | 1024 x 1024 | transparent, lightened mark | GitHub dark theme |
-| `banner.png` | 1280 x 400 | Ife Green or Raffia | README hero |
-| `icon.png` | 512 x 512 | transparent | favicon, social preview |
+| `logo.png` | 1024 x 1024 | transparent | README hero, light theme |
+| `logo-dark.png` | 1024 x 1024 | transparent, lifted greens | README hero, dark theme |
+| `icon.png` | 512 x 512 | transparent | app icon |
+| `favicon-64.png` | 64 x 64 | transparent | favicon |
+| `banner.png` | 1280 x 400 | Ife Green | wide header |
 | `social-preview.png` | 1280 x 640 | Ife Green | GitHub Open Graph card |
+
+The README uses a `<picture>` element so the mark swaps automatically between GitHub themes.
+
+An `logo.svg` is still wanted. If you can trace the mark to clean vector, that is a genuinely
+useful contribution.
 
 ---
 
