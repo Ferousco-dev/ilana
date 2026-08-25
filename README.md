@@ -20,7 +20,7 @@
 
 _Built from SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife._
 
-[Quickstart](docs/quickstart.md) · [Architecture](docs/architecture.md) · [Worked example](docs/examples/library-management-system.md) · [FAQ](docs/faq.md) · [Adapters](adapters/) · [Contributing](CONTRIBUTING.md)
+[Install](#install) · [Usage guide](docs/USING.md) · [Architecture](docs/architecture.md) · [Worked example](docs/examples/library-management-system.md) · [FAQ](docs/faq.md) · [Adapters](adapters/) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -127,48 +127,116 @@ user overrode and how that override followed them to the release gate.
 
 ## Install
 
+Three ways. Pick one.
+
+### 1. Let your coding agent do it
+
+Paste this to Claude Code, Codex, Cursor, or anything else that can run shell commands:
+
+```
+install this skill: https://github.com/Ferousco-dev/ilana
+```
+
+The repository has an [`AGENTS.md`](AGENTS.md) at its root written for exactly this. Your agent
+reads it, runs the three commands, and shows you the verification output. It also knows what
+*not* to do, like vendoring the skill loose into your source tree.
+
+### 2. One command
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ferousco-dev/ilana/main/install.sh | sh
 ```
 
-Or, if you would rather read it first (you should):
+### 3. By hand, if you would rather read it first (you should)
 
 ```bash
 git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ~/.ilana-src/bin/ilana install --link --all
-ilana doctor
+~/.ilana-src/bin/ilana doctor
 ```
 
-Then, in your coding agent:
+All three do the same thing: symlink `skill/` into every coding-agent directory on your machine.
+Because they are symlinks to one directory, **`git pull` updates every agent at once**. Nothing
+diverges.
+
+`ilana doctor` tells you whether it worked:
+
+```
+  hosts:
+    linked  claude-code  ~/.claude/skills/ilana -> ~/.ilana-src/skill
+    linked  codex        ~/.codex/skills/ilana  -> ~/.ilana-src/skill
+    absent  opencode     ~/.config/opencode/skills/ilana
+```
+
+<details>
+<summary><b>Per-agent paths, if <code>--all</code> missed yours</b></summary>
+
+| Agent | Guide | Mechanism |
+| --- | --- | --- |
+| Claude Code | [claude-code.md](adapters/claude-code.md) | `~/.claude/skills/ilana/` |
+| OpenAI Codex | [codex.md](adapters/codex.md) | `AGENTS.md` + `~/.codex/skills/` |
+| Cursor | [cursor.md](adapters/cursor.md) | `.cursor/rules/ilana.mdc` |
+| Windsurf | [windsurf.md](adapters/windsurf.md) | `.windsurf/rules/` |
+| Gemini CLI | [gemini-cli.md](adapters/gemini-cli.md) | `GEMINI.md` |
+| GitHub Copilot | [copilot.md](adapters/copilot.md) | `.github/copilot-instructions.md` |
+| Continue | [continue.md](adapters/continue.md) | `.continue/rules/` |
+| Aider | [aider.md](adapters/aider.md) | `CONVENTIONS.md` |
+| OpenCode | [opencode.md](adapters/opencode.md) | `~/.config/opencode/skills/` |
+| Anything else | [generic.md](adapters/generic.md) | paste [`ILANA.md`](adapters/templates/ILANA.md) |
+
+No skill mechanism at all? [`adapters/templates/ILANA.md`](adapters/templates/ILANA.md) is a single
+self-contained file carrying the boot sequence, the constitution, the gates and the routing table.
+Paste it into any system prompt or chat window.
+
+</details>
+
+---
+
+## Use it
+
+Start a **new** session in any project and say:
 
 ```
 use ilana
 ```
 
-**One installation, every agent.** `--all` symlinks the same directory into every agent it finds on
-your machine. `git pull` updates all of them at once. Nothing diverges.
+Nothing happens until you answer one question:
 
-<details>
-<summary><b>Per-agent install instructions</b></summary>
+```
+Ìlànà v1.0.0 online. Kernel loaded.
 
-| Agent          | Guide                                     | Mechanism                                       |
-| -------------- | ----------------------------------------- | ----------------------------------------------- |
-| Claude Code    | [claude-code.md](adapters/claude-code.md) | `~/.claude/skills/ilana/`                       |
-| OpenAI Codex   | [codex.md](adapters/codex.md)             | `AGENTS.md` + `~/.codex/skills/`                |
-| Cursor         | [cursor.md](adapters/cursor.md)           | `.cursor/rules/ilana.mdc`                       |
-| Windsurf       | [windsurf.md](adapters/windsurf.md)       | `.windsurf/rules/`                              |
-| Gemini CLI     | [gemini-cli.md](adapters/gemini-cli.md)   | `GEMINI.md`                                     |
-| GitHub Copilot | [copilot.md](adapters/copilot.md)         | `.github/copilot-instructions.md`               |
-| Continue       | [continue.md](adapters/continue.md)       | `.continue/rules/`                              |
-| Aider          | [aider.md](adapters/aider.md)             | `CONVENTIONS.md`                                |
-| OpenCode       | [opencode.md](adapters/opencode.md)       | `~/.config/opencode/skills/`                    |
-| Anything else  | [generic.md](adapters/generic.md)         | paste [`ILANA.md`](adapters/templates/ILANA.md) |
+How should Ìlànà run this?
 
-No skill mechanism at all? [`adapters/templates/ILANA.md`](adapters/templates/ILANA.md) is a
-single self-contained file carrying the boot sequence, the constitution, the gates and the routing
-table. Paste it into any system prompt or chat window.
+  [1] FLEET  a bundle of specialist agents running a full, gated lifecycle
+  [2] TASK   one specialist, one focused operation, one artifact
 
-</details>
+Other modes: AUDIT, TUTOR, DOCTOR, DRILL.
+```
+
+**Answer `2` the first time.** See the machinery on something small before you commit a session to
+a full lifecycle.
+
+Then it asks five to nine questions in one batch and waits. Answer what you know; type `assume` for
+the rest and it states its assumptions rather than hiding them.
+
+### The things people actually say
+
+| You say | You get |
+| --- | --- |
+| `ilana: write me a test plan for this service` | TASK mode, one artifact, minutes |
+| `ilana: I'm building a URL shortener. Fleet mode.` | the full gated lifecycle |
+| `audit this repo with ilana` | read-only scoring of all eleven phases, ranked findings |
+| `ilana: gate this before I ship` | release readiness check; finds the rollback you never tested |
+| `ilana doctor mode: the same bugs keep coming back` | diagnoses the process, prescribes **one** fix |
+| `ilana drill: gauntlet` | 40 questions and a scorecard by phase |
+| `rigour 2` | mid-run, drops the strictness |
+| `override, demo is Friday` | accepts a failed gate, records your reason, moves on |
+
+**If it feels heavy, you are at the wrong rigour.** Say `rigour 2` and it becomes a light
+sanity-check that still writes things down.
+
+**Full guide: [docs/USING.md](docs/USING.md)** covers reading gate verdicts, steering, overriding,
+the ledger, team setup and troubleshooting.
 
 ---
 
@@ -624,6 +692,8 @@ ilana/
 │   └── update/                 the self-update mechanism
 ├── adapters/                   10 host guides + self-contained single-file version
 ├── bin/ilana                   the CLI
+├── AGENTS.md                   how an agent installs this, and how to contribute
+├── docs/USING.md               the usage guide: what to say, how to read it, how to steer
 ├── docs/                       quickstart, architecture, FAQ, syllabus map, examples
 ├── source/                     the original SEN102/212 lecture deck
 ├── tests/validate.sh           structural validation, run by CI

@@ -27,6 +27,7 @@ looks in a different directory than you installed to, or an old copy is shadowin
 | Question | Document |
 | --- | --- |
 | How do I install and start? | `docs/quickstart.md` |
+| **How do I actually use it day to day?** | **`docs/USING.md`** |
 | Why is it built this way? | `docs/architecture.md` |
 | Common questions | `docs/faq.md` |
 | Where is topic X from my course? | `docs/syllabus-map.md` |

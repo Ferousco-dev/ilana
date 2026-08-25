@@ -50,19 +50,45 @@ say "  cli      $BIN/ilana"
 "$SRC/bin/ilana" install "--$METHOD" --all
 
 say ""
+
+# The CLI is optional (only `ilana update` and `ilana doctor` need it), but a
+# missing PATH entry is the single most common install complaint, so be explicit
+# about which file to edit rather than saying "your shell profile".
 case ":$PATH:" in
-  *":$BIN:"*) ;;
+  *":$BIN:"*)
+    say "  path     $BIN is already on your PATH"
+    ;;
   *)
-    say "  NOTE  $BIN is not on your PATH. Add this to your shell profile:"
-    say "          export PATH=\"$BIN:\$PATH\""
+    profile=""
+    case "$(basename "${SHELL:-sh}")" in
+      zsh)  profile="$HOME/.zshrc" ;;
+      bash) [ -f "$HOME/.bash_profile" ] && profile="$HOME/.bash_profile" || profile="$HOME/.bashrc" ;;
+      fish) profile="$HOME/.config/fish/config.fish" ;;
+    esac
+
+    say "  NOTE  $BIN is not on your PATH."
+    say "        The skill itself works without it. Only \`ilana update\` and"
+    say "        \`ilana doctor\` need the command."
     say ""
+    if [ "$(basename "${SHELL:-sh}")" = "fish" ]; then
+      say "        Run:  fish_add_path $BIN"
+    elif [ -n "$profile" ]; then
+      say "        Run:  echo 'export PATH=\"$BIN:\$PATH\"' >> $profile && exec \$SHELL"
+    else
+      say "        Add to your shell profile:  export PATH=\"$BIN:\$PATH\""
+    fi
+    say ""
+    say "        Or use the full path:  $SRC/bin/ilana"
     ;;
 esac
 
-say "  next steps"
-say "    ilana doctor                 verify the installation"
-say "    ilana init --rigour 3        create .ilana/ in a project"
-say "    ilana autoupdate --enable    keep it current automatically"
 say ""
-say "  in your coding agent, say:  use ilana"
+say "  next steps"
+say "    1.  start a NEW session in your coding agent"
+say "    2.  say:  use ilana"
+say "    3.  answer the fork question: fleet of agents, or a single task"
+say ""
+say "  guide     $SRC/docs/USING.md"
+say "  verify    $SRC/bin/ilana doctor"
+say "  autoupdate $SRC/bin/ilana autoupdate --enable"
 say ""

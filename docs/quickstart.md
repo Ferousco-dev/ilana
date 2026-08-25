@@ -2,6 +2,9 @@
 
 Five minutes from nothing to a gated process.
 
+This page is about **getting installed**. For what to say once you are, and how to read what comes
+back, see [USING.md](USING.md).
+
 ---
 
 ## 1. Install

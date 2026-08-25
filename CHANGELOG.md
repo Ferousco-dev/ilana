@@ -11,6 +11,23 @@ existing projects behave.
 
 ## [Unreleased]
 
+### Added
+
+- `AGENTS.md` at the repository root, written for an agent that has been handed the repo URL and
+  asked to install it. Carries the exact commands, the symlink fallback, per-host paths, and an
+  explicit list of things not to do. Makes `install this skill: <url>` a first-class path.
+- `docs/USING.md`, the usage guide: what to say, how to read gate verdicts and handoffs, the rigour
+  dial, recipes for the things people actually want, what gets written to `.ilana/`, steering and
+  overriding, team setup, and troubleshooting.
+
+### Changed
+
+- README install section restructured around the three real paths, with agent-driven install first,
+  followed by a "Use it" section showing the fork question and the phrasings that land.
+- `install.sh` now detects the shell and prints the exact profile file and command for the PATH
+  fix, rather than saying "your shell profile". It also states that the CLI is optional.
+- FAQ answers "can I just point my agent at the repo" and "how do I know it installed correctly".
+
 ## [1.0.0] - 2026-08-25
 
 First release.

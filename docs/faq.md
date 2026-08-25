@@ -1,5 +1,36 @@
 # FAQ
 
+**Can I just point my agent at the repo and say "install this"?**
+
+Yes. That is the intended path:
+
+```
+install this skill: https://github.com/Ferousco-dev/ilana
+```
+
+There is an [`AGENTS.md`](../AGENTS.md) at the repository root written specifically for an agent
+that has been handed the URL. It carries the exact commands, the fallback if symlinks are not
+possible, the per-host paths, and a list of things not to do (do not vendor the skill loose into
+the user's source tree; do not touch any `.ilana/` directory found).
+
+If your agent cannot run shell commands it will say so rather than improvise, and point you at
+[`adapters/templates/ILANA.md`](../adapters/templates/ILANA.md), the single-file version you can
+paste into a system prompt.
+
+---
+
+**How do I know it installed correctly?**
+
+```bash
+ilana doctor
+```
+
+Look at the `hosts:` block. Every agent directory it knows about is listed as `linked`, `copied` or
+`absent`. Then start a **new** session, because most agents load skills at session start, and say
+`use ilana`. If it answers with the fork question, it is working.
+
+---
+
 **Is this only for students?**
 
 No. It came out of a university course, and the course happens to cover the things working
