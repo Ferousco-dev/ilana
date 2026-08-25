@@ -32,16 +32,22 @@ machine to `~/.ilana-src/skill`. Because they are symlinks to one directory, a l
 `doctor` prints what it installed and where. **Show the user that output.** It is how they know it
 worked.
 
-## If the user wants the CLI on their PATH
+## About the `ilana` command
 
-Optional. Only `ilana update` and `ilana doctor` need it.
+`install --link --all` already links the command into `~/.local/bin`. If that directory is not on
+the user's PATH, the installer says so and prints the exact line for their shell.
+
+**Relay that line to the user. Do not edit their shell profile yourself without asking.**
+
+Only `ilana update`, `ilana doctor` and the shell shortcuts need the command. The skill and the
+slash commands work regardless, and the command always works by full path:
 
 ```bash
-mkdir -p ~/.local/bin && ln -sf ~/.ilana-src/bin/ilana ~/.local/bin/ilana
+~/.ilana-src/bin/ilana doctor
 ```
 
-Then check whether `~/.local/bin` is on their PATH, and if it is not, tell them the exact line to
-add to their shell profile. Do not edit their shell profile without asking.
+To put it somewhere already on PATH: `ILANA_BIN=/usr/local/bin ~/.ilana-src/bin/ilana install --link --all`.
+To skip it: add `--no-cli`.
 
 ## If symlinks are not possible
 

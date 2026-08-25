@@ -11,6 +11,39 @@ existing projects behave.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-25
+
+A field-reported installation bug and everything around it.
+
+### Fixed
+
+- **`bin/ilana` did not resolve `$0` through symlinks.** Invoking it through the symlink on PATH,
+  which is the normal setup, made `REPO_ROOT` resolve to the symlink's own directory. `ilana doctor`
+  then reported `version: unknown`, `MISSING SKILL.md`, `phases: 0`, `agents: 0` and
+  `installation incomplete`, while the same command run by absolute path reported `healthy`. Now
+  resolved with a bounded loop and `pwd -P`.
+- **`ilana install` never put the CLI on PATH**, so `ilana: command not found` immediately after a
+  successful install was the expected outcome. Only `install.sh` linked it. `install --all` now
+  links the command into `~/.local/bin` (override with `ILANA_BIN`, opt out with `--no-cli`).
+
+### Added
+
+- `ilana doctor` reports a `cli on PATH:` section: whether the command resolves, where it resolves
+  to, and a warning if another installation is shadowing this one.
+- When `~/.local/bin` is not on PATH, both `install` and `doctor` name the user's actual shell
+  profile and print the exact command, for zsh, bash and fish. "Add it to your shell profile" is
+  useless advice if you do not know which file that is.
+- `--no-cli` flag on `ilana install`.
+- Three CI regression steps pinned to the reported path: `ilana doctor` must report `healthy`
+  through `~/.local/bin/ilana` and must resolve `repository:` to the real clone; `install` must
+  print concrete PATH advice when the command will not resolve; `--no-cli` must be respected.
+
+### Changed
+
+- Troubleshooting in `docs/USING.md`, the FAQ and `AGENTS.md` all now state plainly that the skill
+  and slash commands work without the CLI on PATH, so a missing PATH entry is an inconvenience
+  rather than a broken install.
+
 ### Added
 
 - **Slash commands.** `/ilana` plus eleven subcommands: `task`, `fleet`, `audit`, `ship`, `review`,

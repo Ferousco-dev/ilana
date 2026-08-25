@@ -100,6 +100,48 @@ host_targets() {
 
 # Slash commands are a convenience layer. Claude Code is the only host with a
 # directory convention for them today; everything they do also works in prose.
+CLI_BIN_DIR="${ILANA_BIN:-$HOME/.local/bin}"
+
+# Name the user's actual shell profile. "Add it to your shell profile" is useless
+# advice if you do not know which file that is.
+path_hint() {
+  dir="$1"
+  case "$(basename "${SHELL:-sh}")" in
+    fish) say "        run:  fish_add_path $dir" ;;
+    zsh)  say "        run:  echo 'export PATH=\"$dir:\$PATH\"' >> \$HOME/.zshrc && exec zsh" ;;
+    bash)
+      if [ -f "$HOME/.bash_profile" ]; then rc="\$HOME/.bash_profile"; else rc="\$HOME/.bashrc"; fi
+      say "        run:  echo 'export PATH=\"$dir:\$PATH\"' >> $rc && exec bash"
+      ;;
+    *)    say "        add to your shell profile:  export PATH=\"$dir:\$PATH\"" ;;
+  esac
+}
+
+on_path() {
+  case ":$PATH:" in *":$1:"*) return 0 ;; *) return 1 ;; esac
+}
+
+install_cli() {
+  target="$CLI_BIN_DIR/ilana"
+  mkdir -p "$CLI_BIN_DIR" 2>/dev/null || {
+    warn "cannot create $CLI_BIN_DIR; skipping the CLI link"
+    return 0
+  }
+  ln -sf "$REPO_ROOT/bin/ilana" "$target" || {
+    warn "cannot link the CLI into $CLI_BIN_DIR"
+    return 0
+  }
+  say "link    cli          ->  $target"
+
+  if ! on_path "$CLI_BIN_DIR"; then
+    say ""
+    say "  NOTE  $CLI_BIN_DIR is not on your PATH, so \`ilana\` will not resolve yet."
+    say "        The skill and the slash commands already work without it."
+    path_hint "$CLI_BIN_DIR"
+    say "        or use the full path:  $REPO_ROOT/bin/ilana"
+  fi
+}
+
 CMD_SRC="$REPO_ROOT/commands/claude"
 CMD_DIR="$HOME/.claude/commands"
 
@@ -140,11 +182,13 @@ do_install() {
   method="link"
   target=""
   install_all=0
+  want_cli=1
   while [ $# -gt 0 ]; do
     case "$1" in
       --link) method="link" ;;
       --copy) method="copy" ;;
       --all) install_all=1 ;;
+      --no-cli) want_cli=0 ;;
       --target) shift; target="${1:-}" ;;
       *) die "unknown option $1" ;;
     esac
@@ -158,9 +202,11 @@ do_install() {
       install_one "$method" "$path" "$host"
     done
     install_commands "$method"
+    [ "$want_cli" -eq 1 ] && install_cli
     write_state "$method" "$REPO_ROOT" "multiple"
     say ""
-    say "  next: start a NEW session in your agent and type  /ilana"
+    say "  verify: $REPO_ROOT/bin/ilana doctor"
+    say "  next:   start a NEW session in your agent and type  /ilana"
     say "  guide: $REPO_ROOT/docs/USING.md"
     return 0
   fi
@@ -349,6 +395,28 @@ do_doctor() {
     find "$CONFIG_DIR/overrides" -type f 2>/dev/null | sed "s|$CONFIG_DIR/overrides/|    active  |" || true
   else
     say "    none"
+  fi
+  say ""
+
+  say "  cli on PATH:"
+  resolved="$(command -v ilana 2>/dev/null || true)"
+  if [ -n "$resolved" ]; then
+    real="$resolved"
+    hops=0
+    while [ -L "$real" ]; do
+      hops=$((hops + 1)); [ "$hops" -gt 40 ] && break
+      lnk="$(readlink "$real")"
+      case "$lnk" in /*) real="$lnk" ;; *) real="$(dirname "$real")/$lnk" ;; esac
+    done
+    say "    ok      ilana -> $resolved"
+    if [ "$real" != "$REPO_ROOT/bin/ilana" ]; then
+      say "    WARN    resolves to $real, not $REPO_ROOT/bin/ilana"
+      say "            another installation is shadowing this one"
+    fi
+  else
+    say "    absent  \`ilana\` is not on your PATH"
+    path_hint "$CLI_BIN_DIR"
+    say "            or run it directly: $REPO_ROOT/bin/ilana"
   fi
   say ""
 
@@ -597,7 +665,8 @@ ilana - the software engineering process skill
   ilana install [--link|--copy] [--target DIR] [--all]
         --link    symlink the skill (default; updates arrive with git pull)
         --copy    copy the files (for hosts that will not follow symlinks)
-        --all     install to every known agent location
+        --all     install to every known agent location, plus the CLI on PATH
+        --no-cli  do not link the ilana command into ~/.local/bin
         --target  install to a specific directory
 
   ilana update [--quiet] [--force]     pull upstream and refresh installs

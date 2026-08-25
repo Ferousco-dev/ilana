@@ -379,13 +379,35 @@ Look at the `hosts:` block. It shows every agent directory it knows and whether 
 `copied` or `absent`. If yours says `absent`, find your agent in `adapters/` and follow that guide.
 Then start a **new** session; most agents load skills at session start.
 
-**"`ilana: command not found`."** The CLI is not on your PATH. Either use the full path
-`~/.ilana-src/bin/ilana`, or:
+**"`ilana: command not found`."**
+
+`ilana install` links the command into `~/.local/bin`, but that directory is not on every system's
+PATH by default. The installer detects this and prints the exact command for your shell. If you
+missed it:
 
 ```bash
-mkdir -p ~/.local/bin && ln -sf ~/.ilana-src/bin/ilana ~/.local/bin/ilana
+# zsh (the macOS default)
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && exec zsh
+
+# bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && exec bash
+
+# fish
+fish_add_path ~/.local/bin
 ```
+
+`ilana doctor` reports this under `cli on PATH:` and tells you what to run.
+
+**None of this affects the skill.** The skill and the slash commands work without the CLI on PATH.
+Only `ilana update`, `ilana doctor` and the shell shortcuts need the command. You can always invoke
+it by its full path:
+
+```bash
+~/.ilana-src/bin/ilana doctor
+```
+
+Install somewhere else with `ILANA_BIN=/usr/local/bin ilana install --link --all`, or skip the CLI
+link entirely with `--no-cli`.
 
 **"It skipped the fork question."** It should never do that. If your request already clearly named
 a mode ("write me a test plan") it will state its reading and let you correct it. If it genuinely

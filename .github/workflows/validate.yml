@@ -127,17 +127,45 @@ jobs:
           [ "$n" -ge 11 ] || { echo "expected 11+ commands, found $n"; exit 1; }
           echo "ok   $n slash commands resolve through the install"
 
-      - name: cli works through a PATH symlink
+      # Regression: reported from the field. Invoking the CLI through the symlink
+      # that `ilana install` creates in ~/.local/bin made REPO_ROOT resolve to
+      # ~/.local, so doctor reported the payload missing and every derived path
+      # was wrong. This pins the exact reported path.
+      - name: regression, cli through ~/.local/bin/ilana
         run: |
-          mkdir -p "$HOME/binlink"
-          ln -sf "$PWD/bin/ilana" "$HOME/binlink/ilana"
-          out=$("$HOME/binlink/ilana" version)
-          echo "$out"
-          case "$out" in *unknown*) echo "symlink resolution regressed"; exit 1 ;; esac
-          "$HOME/binlink/ilana" doctor | grep -q 'phases: 11' \
-            || { echo "doctor cannot see the payload through a symlink"; exit 1; }
-          "$HOME/binlink/ilana" commands | grep -q '/ilana:task'
-          echo "ok   cli resolves correctly through a PATH symlink"
+          ./bin/ilana install --link --all
+          test -L "$HOME/.local/bin/ilana" || { echo "install did not link the CLI"; exit 1; }
+
+          export PATH="$HOME/.local/bin:$PATH"
+
+          out=$(ilana version); echo "$out"
+          case "$out" in *unknown*) echo "FAIL version unknown: symlink resolution regressed"; exit 1 ;; esac
+
+          ilana doctor > /tmp/doc.txt || { cat /tmp/doc.txt; echo "FAIL doctor exited non-zero"; exit 1; }
+          grep -q 'phases: 11'  /tmp/doc.txt || { cat /tmp/doc.txt; echo "FAIL payload not seen"; exit 1; }
+          grep -q 'agents: 13'  /tmp/doc.txt || { cat /tmp/doc.txt; echo "FAIL agents not seen"; exit 1; }
+          grep -q 'healthy'     /tmp/doc.txt || { cat /tmp/doc.txt; echo "FAIL not healthy"; exit 1; }
+          grep -q 'ok      ilana ->' /tmp/doc.txt || { cat /tmp/doc.txt; echo "FAIL PATH not reported"; exit 1; }
+
+          grep -q "repository:     $GITHUB_WORKSPACE" /tmp/doc.txt \
+            || { cat /tmp/doc.txt; echo "FAIL repository resolved to the wrong root"; exit 1; }
+
+          ilana commands | grep -q '/ilana:task'
+          echo "ok   ilana doctor reports healthy through ~/.local/bin/ilana"
+
+      - name: install advises on PATH when the CLI will not resolve
+        run: |
+          out=$(env PATH="/usr/bin:/bin" SHELL=/bin/bash ./bin/ilana install --link --all 2>&1)
+          echo "$out" | grep -q 'is not on your PATH' || { echo "$out"; echo "FAIL no PATH advice"; exit 1; }
+          echo "$out" | grep -q 'export PATH' || { echo "$out"; echo "FAIL no concrete command"; exit 1; }
+          echo "ok   install names the shell profile and the exact command"
+
+      - name: --no-cli opts out
+        run: |
+          rm -f "$HOME/.local/bin/ilana"
+          ./bin/ilana install --link --all --no-cli
+          test ! -e "$HOME/.local/bin/ilana" || { echo "FAIL --no-cli still linked the CLI"; exit 1; }
+          echo "ok   --no-cli respected"
 
       - name: project shortcuts
         run: |

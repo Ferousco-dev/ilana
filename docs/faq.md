@@ -19,6 +19,21 @@ paste into a system prompt.
 
 ---
 
+**`ilana: command not found` right after installing.**
+
+`ilana install` links the command into `~/.local/bin`, which is not on every system's PATH. The
+installer detects this and prints the exact line for your shell. `ilana doctor` reports it too,
+under `cli on PATH:`.
+
+The skill itself is unaffected: it and the slash commands work without the CLI on PATH. Only
+`ilana update`, `ilana doctor` and the shell shortcuts need the command, and those all work by full
+path (`~/.ilana-src/bin/ilana doctor`).
+
+Set `ILANA_BIN` to install the command somewhere already on your PATH, or pass `--no-cli` to skip
+linking it at all.
+
+---
+
 **How do I know it installed correctly?**
 
 ```bash
