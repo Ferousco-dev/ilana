@@ -92,6 +92,18 @@ release: check ## tag a release, e.g. make release V=1.1.0
 	@git tag -a "v$(V)" -m "ilana $(V)"
 	@printf '\ntagged v%s. push with: git push && git push --tags\n' "$(V)"
 
+.PHONY: setup-repo
+setup-repo: ## point the repo at your GitHub account, e.g. make setup-repo OWNER=yourhandle
+	@test -n "$(OWNER)" || { printf 'usage: make setup-repo OWNER=yourhandle\n'; exit 1; }
+	@files=$$(grep -rl 'OWNER' --include='*.md' --include='*.yml' --include='*.yaml' \
+	   --include='*.json' --include='*.cff' --include='*.sh' --include='CODEOWNERS' \
+	   . 2>/dev/null | grep -v '^./source/' | grep -v '^./.git/'); \
+	 for f in $$files bin/ilana Makefile; do \
+	   sed -i.bak "s|OWNER/ilana|$(OWNER)/ilana|g; s|@OWNER|@$(OWNER)|g" "$$f" && rm -f "$$f.bak"; \
+	 done; \
+	 printf 'repository now points at github.com/%s/ilana\n' "$(OWNER)"
+	@printf 'remaining OWNER references: %s\n' "$$(grep -rl 'OWNER' --include='*.md' --include='*.yml' . 2>/dev/null | grep -v source | wc -l | tr -d ' ')"
+
 .PHONY: topics
 topics: ## set the GitHub repository topics (requires gh)
 	@gh repo edit --add-topic ai-skill,claude-skill,claude-code,codex,agent-skills,software-engineering,sdlc,requirements-engineering,software-testing,software-quality-assurance,cmmi,iso-12207,devops,scm,process-improvement,software-architecture,code-review,technical-documentation,oau,open-source

@@ -120,6 +120,20 @@ user overrode and how that override followed them to the release gate.
 
 ---
 
+## Before you publish this
+
+This repository ships with `OWNER` as a placeholder wherever a GitHub handle belongs. One command
+replaces every occurrence:
+
+```bash
+make setup-repo OWNER=your-github-handle
+make topics                 # sets the repository topics, needs the gh CLI
+```
+
+Then delete this section.
+
+---
+
 ## Install
 
 ```bash
