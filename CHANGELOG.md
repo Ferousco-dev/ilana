@@ -13,12 +13,26 @@ existing projects behave.
 
 ### Added
 
+- **Slash commands.** `/ilana` plus eleven subcommands: `task`, `fleet`, `audit`, `ship`, `review`,
+  `gate`, `doctor`, `drill`, `tutor`, `status`, `rigour`. Installed automatically by
+  `ilana install`, symlinked so they update with the skill. Every command has a prose equivalent,
+  because most agents have no slash-command mechanism.
+- **CLI shortcuts for the instruments.** `ilana status`, `ilana gate G4`, `ilana metrics`,
+  `ilana trace`, `ilana commands`. `ilana gate` reads rigour from `.ilana/state.json` when not
+  given one, so the common case is two words.
+
 - `AGENTS.md` at the repository root, written for an agent that has been handed the repo URL and
   asked to install it. Carries the exact commands, the symlink fallback, per-host paths, and an
   explicit list of things not to do. Makes `install this skill: <url>` a first-class path.
 - `docs/USING.md`, the usage guide: what to say, how to read gate verdicts and handoffs, the rigour
   dial, recipes for the things people actually want, what gets written to `.ilana/`, steering and
   overriding, team setup, and troubleshooting.
+
+### Fixed
+
+- `bin/ilana` now resolves `$0` through symlinks. Invoking it via a symlink on PATH, which is the
+  normal setup, made `REPO_ROOT` point at the symlink's directory instead of the clone, so
+  `ilana doctor` reported the payload as missing and every derived path was wrong.
 
 ### Changed
 

@@ -96,6 +96,22 @@ need_dir  interrogation/banks
 bank_count=$(find "$SKILL/interrogation/banks" -name '*.md' | wc -l | tr -d ' ')
 [ "$bank_count" -ge 11 ] && ok "$bank_count question banks" || bad "expected at least 11 banks, found $bank_count"
 
+printf '\ncommands\n'
+CMDS="$ROOT/commands/claude"
+[ -f "$CMDS/ilana.md" ] && ok "commands/claude/ilana.md" || bad "missing commands/claude/ilana.md"
+for c in task fleet audit ship review gate doctor drill tutor status rigour; do
+  [ -f "$CMDS/ilana/$c.md" ] || bad "missing commands/claude/ilana/$c.md"
+done
+cmd_count=$(find "$CMDS/ilana" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+[ "$cmd_count" -ge 11 ] && ok "$cmd_count subcommands present" || bad "expected 11+ subcommands, found $cmd_count"
+fm_ok=1
+for f in "$CMDS/ilana.md" "$CMDS"/ilana/*.md; do
+  [ -f "$f" ] || continue
+  head -1 "$f" | grep -q '^---$' || { bad "$(basename "$f") missing frontmatter"; fm_ok=0; }
+  grep -q '^description:' "$f" || { bad "$(basename "$f") missing description"; fm_ok=0; }
+done
+[ "$fm_ok" -eq 1 ] && ok "every command carries frontmatter and a description"
+
 printf '\nupdate\n'
 need_file update/UPDATE.md
 need_file update/check-update.sh

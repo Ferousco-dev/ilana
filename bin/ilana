@@ -21,13 +21,29 @@ RAW_BASE="https://raw.githubusercontent.com/${REPO_SLUG}"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ilana"
 STATE_FILE="$CONFIG_DIR/state.json"
 
+# Resolve $0 through any symlinks. Without this, invoking ilana via a symlink on
+# PATH (the normal setup) makes REPO_ROOT point at the symlink's directory rather
+# than the clone, and every path derived from it is wrong.
 SELF="$0"
 case "$SELF" in
   /*) ;;
-  *) SELF="$PWD/$SELF" ;;
+  */*) SELF="$PWD/$SELF" ;;
+  *) SELF="$(command -v -- "$SELF" 2>/dev/null || printf '%s' "$PWD/$SELF")" ;;
 esac
-BIN_DIR="$(dirname "$SELF")"
-REPO_ROOT="$(cd "$BIN_DIR/.." && pwd)"
+
+hops=0
+while [ -L "$SELF" ]; do
+  hops=$((hops + 1))
+  [ "$hops" -gt 40 ] && break                 # symlink loop guard
+  link="$(readlink "$SELF")"
+  case "$link" in
+    /*) SELF="$link" ;;
+    *)  SELF="$(dirname "$SELF")/$link" ;;
+  esac
+done
+
+BIN_DIR="$(cd "$(dirname "$SELF")" && pwd -P)"
+REPO_ROOT="$(cd "$BIN_DIR/.." && pwd -P)"
 SKILL_SRC="$REPO_ROOT/skill"
 
 # ---------------------------------------------------------------- output ----
@@ -82,6 +98,38 @@ host_targets() {
   say "generic:$HOME/.config/ilana/skill"
 }
 
+# Slash commands are a convenience layer. Claude Code is the only host with a
+# directory convention for them today; everything they do also works in prose.
+CMD_SRC="$REPO_ROOT/commands/claude"
+CMD_DIR="$HOME/.claude/commands"
+
+install_commands() {
+  method="$1"
+  [ -d "$CMD_SRC" ] || return 0
+  mkdir -p "$CMD_DIR"
+
+  for target in "$CMD_DIR/ilana.md" "$CMD_DIR/ilana"; do
+    if [ -L "$target" ]; then
+      rm -f "$target"
+    elif [ -e "$target" ]; then
+      mv "$target" "$target.backup.$(date +%Y%m%d%H%M%S)"
+      warn "existing $(basename "$target") moved aside"
+    fi
+  done
+
+  if [ "$method" = "link" ]; then
+    ln -s "$CMD_SRC/ilana.md" "$CMD_DIR/ilana.md"
+    ln -s "$CMD_SRC/ilana"    "$CMD_DIR/ilana"
+  else
+    cp "$CMD_SRC/ilana.md" "$CMD_DIR/ilana.md"
+    mkdir -p "$CMD_DIR/ilana"
+    (cd "$CMD_SRC/ilana" && tar cf - .) | (cd "$CMD_DIR/ilana" && tar xf -)
+  fi
+
+  n=$(find "$CMD_SRC/ilana" -name '*.md' | wc -l | tr -d ' ')
+  say "$method    commands     ->  $CMD_DIR   (/ilana plus $n subcommands)"
+}
+
 default_target() {
   printf '%s' "$HOME/.claude/skills/ilana"
 }
@@ -109,12 +157,19 @@ do_install() {
     host_targets | while IFS=: read -r host path; do
       install_one "$method" "$path" "$host"
     done
+    install_commands "$method"
     write_state "$method" "$REPO_ROOT" "multiple"
+    say ""
+    say "  next: start a NEW session in your agent and type  /ilana"
+    say "  guide: $REPO_ROOT/docs/USING.md"
     return 0
   fi
 
   [ -n "$target" ] || target="$(default_target)"
   install_one "$method" "$target" "custom"
+  case "$target" in
+    "$HOME/.claude/"*) install_commands "$method" ;;
+  esac
   write_state "$method" "$REPO_ROOT" "$target"
 }
 
@@ -460,6 +515,79 @@ do_uninstall() {
   say "done. your .ilana/ process ledgers are untouched."
 }
 
+# ------------------------------------------------------- instrument shims ----
+# The instruments are plain Python and can be called directly. These wrappers
+# exist so nobody has to remember a path four directories deep.
+
+skill_dir() {
+  if [ -d "$SKILL_SRC" ]; then
+    printf '%s' "$SKILL_SRC"
+  elif [ -d "$HOME/.claude/skills/ilana" ]; then
+    printf '%s' "$HOME/.claude/skills/ilana"
+  else
+    printf '%s' "$SKILL_SRC"
+  fi
+}
+
+need_python() {
+  command -v python3 >/dev/null 2>&1 || die "python3 is required for this command"
+}
+
+do_gate() {
+  need_python
+  gate="${1:-}"
+  [ -n "$gate" ] || die "usage: ilana gate G4 [rigour]"
+  shift || true
+  rigour="${1:-}"
+  if [ -z "$rigour" ] && [ -f ".ilana/state.json" ]; then
+    rigour=$(sed -n 's/.*"rigour"[[:space:]]*:[[:space:]]*\([0-9]\).*/\1/p' .ilana/state.json | head -1)
+  fi
+  [ -n "$rigour" ] || rigour=3
+  python3 "$(skill_dir)/instruments/scripts/gate_check.py" --gate "$gate" --rigour "$rigour" --repo .
+}
+
+do_metrics() {
+  need_python
+  python3 "$(skill_dir)/instruments/scripts/metrics.py" --repo . "$@"
+}
+
+do_trace() {
+  need_python
+  python3 "$(skill_dir)/instruments/scripts/traceability.py" \
+    --file "${1:-.ilana/traceability.csv}"
+}
+
+do_ledger_status() {
+  need_python
+  python3 "$(skill_dir)/instruments/scripts/ledger.py" status
+}
+
+do_commands() {
+  cmd_dir="$HOME/.claude/commands"
+  say "ILANA SLASH COMMANDS"
+  say ""
+  if [ ! -e "$cmd_dir/ilana.md" ] && [ ! -d "$cmd_dir/ilana" ]; then
+    say "  not installed. run: ilana install --link --all"
+    say ""
+    say "  everything they do also works in prose, for example:"
+    say "    audit this repo with ilana"
+    say "    ilana: write me a test plan"
+    return 0
+  fi
+  [ -e "$cmd_dir/ilana.md" ] && say "  /ilana                 boot, ask fleet or task"
+  if [ -d "$cmd_dir/ilana" ]; then
+    for f in "$cmd_dir/ilana"/*.md; do
+      [ -f "$f" ] || continue
+      name=$(basename "$f" .md)
+      desc=$(sed -n 's/^description:[[:space:]]*//p' "$f" | head -1 | cut -c1-56)
+      printf '  /ilana:%-14s %s\n' "$name" "$desc"
+    done
+  fi
+  say ""
+  say "  installed at $cmd_dir"
+  say "  guide        $REPO_ROOT/docs/USING.md"
+}
+
 # ------------------------------------------------------------------ help ----
 
 usage() {
@@ -479,6 +607,14 @@ ilana - the software engineering process skill
   ilana pin VERSION | ilana unpin      hold at a version
   ilana autoupdate --enable [--interval daily|weekly] | --disable
   ilana init [--project NAME] [--rigour N]   create .ilana/ in this project
+
+  Working with a project:
+  ilana status                         where this project is in the process
+  ilana gate G4 [rigour]               run one quality gate against this repo
+  ilana metrics [--json]               product, process and project metrics
+  ilana trace [file]                   requirement coverage gaps
+  ilana commands                       list the slash commands
+
   ilana uninstall                      remove installs (never touches .ilana/)
   ilana version
 
@@ -501,6 +637,11 @@ case "$cmd" in
   unpin)      do_unpin ;;
   autoupdate) do_autoupdate "$@" ;;
   init)       do_init "$@" ;;
+  status)     do_ledger_status ;;
+  gate)       do_gate "$@" ;;
+  metrics)    do_metrics "$@" ;;
+  trace)      do_trace "$@" ;;
+  commands)   do_commands ;;
   uninstall)  do_uninstall ;;
   version|-v|--version) say "ilana $(local_version)" ;;
   help|-h|--help) usage ;;

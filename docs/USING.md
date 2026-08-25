@@ -72,6 +72,47 @@ land cleanly.
 | `skip the interface phase, this is a library` | records the skip with your reason |
 | `stop` | halts cleanly; `.ilana/` holds your position for next time |
 
+### Slash commands
+
+Installed with the skill. Faster than prose once you know them.
+
+| Command | Same as saying |
+| --- | --- |
+| `/ilana` | `use ilana` |
+| `/ilana:task write a test plan` | `ilana: write me a test plan` |
+| `/ilana:fleet a URL shortener` | `ilana: build a URL shortener, fleet mode` |
+| `/ilana:audit` | `audit this repo with ilana` |
+| `/ilana:review` | `ilana: review this diff` |
+| `/ilana:ship` | `ilana: gate this before I ship` |
+| `/ilana:gate G4` | `ilana: run gate G4` |
+| `/ilana:doctor <symptom>` | `ilana doctor mode: <symptom>` |
+| `/ilana:status` | `ilana: where am I` |
+| `/ilana:rigour 2` | `rigour 2` |
+| `/ilana:drill gauntlet` | `ilana drill: gauntlet` |
+| `/ilana:tutor <concept>` | `ilana tutor: <concept>` |
+
+`ilana commands` lists them with descriptions. They are a convenience layer, never a requirement:
+every one has a prose equivalent, which matters because most agents have no slash-command
+mechanism.
+
+### From the shell, without an agent
+
+Some things do not need a conversation.
+
+```bash
+ilana status              where this project is in the process
+ilana gate G4             run one gate; reads rigour from .ilana/state.json
+ilana gate G6 5           run a gate at an explicit rigour
+ilana metrics             product, process and project metrics
+ilana metrics --json      the same, machine readable
+ilana trace               which requirements have no design, no test, no verification
+ilana commands            list the slash commands
+ilana doctor              verify the installation
+```
+
+These are wrappers over the instruments in `skill/instruments/scripts/`, which are plain Python 3
+with no dependencies and can be called directly if you prefer.
+
 ### Resuming
 
 Just say `use ilana` again in the same project. It reads `.ilana/` and tells you where you were:

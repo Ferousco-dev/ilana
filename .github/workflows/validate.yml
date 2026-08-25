@@ -117,6 +117,38 @@ jobs:
           test -d "$HOME/test-copy/ilana/phases"
           echo "ok   copy install"
 
+      - name: slash commands install and resolve
+        run: |
+          ./bin/ilana install --link --target "$HOME/.claude/skills/ilana"
+          test -L "$HOME/.claude/commands/ilana.md" || test -f "$HOME/.claude/commands/ilana.md"
+          test -f "$HOME/.claude/commands/ilana/task.md"
+          test -f "$HOME/.claude/commands/ilana/review.md"
+          n=$(ls "$HOME/.claude/commands/ilana"/*.md | wc -l | tr -d ' ')
+          [ "$n" -ge 11 ] || { echo "expected 11+ commands, found $n"; exit 1; }
+          echo "ok   $n slash commands resolve through the install"
+
+      - name: cli works through a PATH symlink
+        run: |
+          mkdir -p "$HOME/binlink"
+          ln -sf "$PWD/bin/ilana" "$HOME/binlink/ilana"
+          out=$("$HOME/binlink/ilana" version)
+          echo "$out"
+          case "$out" in *unknown*) echo "symlink resolution regressed"; exit 1 ;; esac
+          "$HOME/binlink/ilana" doctor | grep -q 'phases: 11' \
+            || { echo "doctor cannot see the payload through a symlink"; exit 1; }
+          "$HOME/binlink/ilana" commands | grep -q '/ilana:task'
+          echo "ok   cli resolves correctly through a PATH symlink"
+
+      - name: project shortcuts
+        run: |
+          tmp=$(mktemp -d); cd "$tmp"; git init -q .
+          "$GITHUB_WORKSPACE/bin/ilana" init --project ci --rigour 3
+          "$GITHUB_WORKSPACE/bin/ilana" status | grep -q 'rigour:  3'
+          "$GITHUB_WORKSPACE/bin/ilana" gate G4 | grep -q VERDICT
+          "$GITHUB_WORKSPACE/bin/ilana" metrics | grep -q 'ILANA METRICS'
+          "$GITHUB_WORKSPACE/bin/ilana" trace >/dev/null 2>&1 || true
+          echo "ok   status, gate, metrics, trace"
+
       - name: uninstall leaves ledgers alone
         run: |
           mkdir -p /tmp/proj/.ilana && echo keep > /tmp/proj/.ilana/ledger.md

@@ -232,6 +232,37 @@ the rest and it states its assumptions rather than hiding them.
 | `rigour 2` | mid-run, drops the strictness |
 | `override, demo is Friday` | accepts a failed gate, records your reason, moves on |
 
+### Or use the slash commands
+
+Installed automatically. `ilana commands` lists them.
+
+| Command | Does |
+| --- | --- |
+| `/ilana` | boot, ask the fork question |
+| `/ilana:task <what>` | one specialist, one artifact |
+| `/ilana:fleet <what>` | the full gated lifecycle |
+| `/ilana:audit` | score this repo, read-only |
+| `/ilana:review` | code review against the standard and G4 |
+| `/ilana:ship` | release readiness, gate G6 |
+| `/ilana:gate G4` | run one gate |
+| `/ilana:doctor <symptom>` | diagnose the process |
+| `/ilana:status` | where am I in the process |
+| `/ilana:rigour 2` | set the strictness dial |
+| `/ilana:drill gauntlet` | 40 questions and a scorecard |
+| `/ilana:tutor <concept>` | learn something properly |
+
+`/ilana:task` and `/ilana:review` are the two you will use most.
+
+### And from the shell, without an agent
+
+```bash
+ilana status              where this project is in the process
+ilana gate G4             run one gate; reads rigour from the ledger
+ilana metrics             product, process and project metrics
+ilana trace               requirement coverage gaps
+ilana doctor              verify the installation
+```
+
 **If it feels heavy, you are at the wrong rigour.** Say `rigour 2` and it becomes a light
 sanity-check that still writes things down.
 
