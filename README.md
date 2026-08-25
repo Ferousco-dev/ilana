@@ -4,7 +4,7 @@
 
 ### A software engineering process operating system for coding agents
 
-**Ìlànà** *(Yoruba: process, method, procedure, the disciplined way a thing is done)*
+**Ìlànà** _(Yoruba: process, method, procedure, the disciplined way a thing is done)_
 
 [![validate](https://github.com/Ferousco-dev/ilana/actions/workflows/validate.yml/badge.svg)](https://github.com/Ferousco-dev/ilana/actions/workflows/validate.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -13,7 +13,7 @@
 
 **11 phases · 9 gates · 13 agents · 10 protocols · 6 modes · 16 constitutional articles**
 
-*Built from SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife.*
+_Built from SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife._
 
 [Quickstart](docs/quickstart.md) · [Architecture](docs/architecture.md) · [Worked example](docs/examples/library-management-system.md) · [FAQ](docs/faq.md) · [Adapters](adapters/) · [Contributing](CONTRIBUTING.md)
 
@@ -120,20 +120,6 @@ user overrode and how that override followed them to the release gate.
 
 ---
 
-## Before you publish this
-
-This repository ships with `OWNER` as a placeholder wherever a GitHub handle belongs. One command
-replaces every occurrence:
-
-```bash
-make setup-repo OWNER=your-github-handle
-make topics                 # sets the repository topics, needs the gh CLI
-```
-
-Then delete this section.
-
----
-
 ## Install
 
 ```bash
@@ -160,18 +146,18 @@ your machine. `git pull` updates all of them at once. Nothing diverges.
 <details>
 <summary><b>Per-agent install instructions</b></summary>
 
-| Agent | Guide | Mechanism |
-| --- | --- | --- |
-| Claude Code | [claude-code.md](adapters/claude-code.md) | `~/.claude/skills/ilana/` |
-| OpenAI Codex | [codex.md](adapters/codex.md) | `AGENTS.md` + `~/.codex/skills/` |
-| Cursor | [cursor.md](adapters/cursor.md) | `.cursor/rules/ilana.mdc` |
-| Windsurf | [windsurf.md](adapters/windsurf.md) | `.windsurf/rules/` |
-| Gemini CLI | [gemini-cli.md](adapters/gemini-cli.md) | `GEMINI.md` |
-| GitHub Copilot | [copilot.md](adapters/copilot.md) | `.github/copilot-instructions.md` |
-| Continue | [continue.md](adapters/continue.md) | `.continue/rules/` |
-| Aider | [aider.md](adapters/aider.md) | `CONVENTIONS.md` |
-| OpenCode | [opencode.md](adapters/opencode.md) | `~/.config/opencode/skills/` |
-| Anything else | [generic.md](adapters/generic.md) | paste [`ILANA.md`](adapters/templates/ILANA.md) |
+| Agent          | Guide                                     | Mechanism                                       |
+| -------------- | ----------------------------------------- | ----------------------------------------------- |
+| Claude Code    | [claude-code.md](adapters/claude-code.md) | `~/.claude/skills/ilana/`                       |
+| OpenAI Codex   | [codex.md](adapters/codex.md)             | `AGENTS.md` + `~/.codex/skills/`                |
+| Cursor         | [cursor.md](adapters/cursor.md)           | `.cursor/rules/ilana.mdc`                       |
+| Windsurf       | [windsurf.md](adapters/windsurf.md)       | `.windsurf/rules/`                              |
+| Gemini CLI     | [gemini-cli.md](adapters/gemini-cli.md)   | `GEMINI.md`                                     |
+| GitHub Copilot | [copilot.md](adapters/copilot.md)         | `.github/copilot-instructions.md`               |
+| Continue       | [continue.md](adapters/continue.md)       | `.continue/rules/`                              |
+| Aider          | [aider.md](adapters/aider.md)             | `CONVENTIONS.md`                                |
+| OpenCode       | [opencode.md](adapters/opencode.md)       | `~/.config/opencode/skills/`                    |
+| Anything else  | [generic.md](adapters/generic.md)         | paste [`ILANA.md`](adapters/templates/ILANA.md) |
 
 No skill mechanism at all? [`adapters/templates/ILANA.md`](adapters/templates/ILANA.md) is a
 single self-contained file carrying the boot sequence, the constitution, the gates and the routing
@@ -241,19 +227,19 @@ Nine sequential, two continuous, all derived from the course syllabus.
   11 ETHICS AND TEAMS ....... continuous, constrains all of the above
 ```
 
-| # | Phase | Covers | Emits |
-| --- | --- | --- | --- |
-| 01 | **Requirements** | elicitation (8 techniques), analysis, specification, validation, management; functional, non-functional and domain types; 6 challenges, 6 strategies | SRS (IEEE 830), traceability matrix |
-| 02 | **Architecture and design** | three levels, six design objectives, NFR mechanisms, architecture decision records | design description (IEEE 1016), ADRs |
-| 03 | **Interface design** | text-based vs graphical, GUI characteristics, the five UI principles as tests you can fail | interface spec, error catalogue |
-| 04 | **Construction** | three goals of coding, six standards, seven guidelines, language characteristics | coding standard, code review records |
-| 05 | **Verification** | four levels, integration strategies, test planning, automation, defect lifecycle | test plan (IEEE 829), defect log |
-| 06 | **Configuration management** | version control, change management, build management, release management | SCM plan, rollback plan, changelog |
-| 07 | **Quality assurance** | five core activities, reviews vs walkthroughs vs inspections vs audits, three metric categories, seven quality attributes | quality management plan, scorecard |
-| 08 | **Process assessment** | measurement, CMMI five levels, ISO/IEC 12207 three categories, optimization | maturity assessment, SPI plan |
-| 09 | **Process modeling** | UML activity diagrams, BPMN, documentation standards, workflows | process model, documentation plan |
-| 10 | **Tooling** | CASE tools (upper, lower, integrated), Jira, Trello, Jenkins, GitHub Actions | toolchain decision record, CI pipeline |
-| 11 | **Ethics and teams** | five ethical issues, ACM/IEEE code, team dynamics, Agile, DevOps, plan-driven | ethics register, RACI, process style |
+| #   | Phase                        | Covers                                                                                                                                               | Emits                                  |
+| --- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| 01  | **Requirements**             | elicitation (8 techniques), analysis, specification, validation, management; functional, non-functional and domain types; 6 challenges, 6 strategies | SRS (IEEE 830), traceability matrix    |
+| 02  | **Architecture and design**  | three levels, six design objectives, NFR mechanisms, architecture decision records                                                                   | design description (IEEE 1016), ADRs   |
+| 03  | **Interface design**         | text-based vs graphical, GUI characteristics, the five UI principles as tests you can fail                                                           | interface spec, error catalogue        |
+| 04  | **Construction**             | three goals of coding, six standards, seven guidelines, language characteristics                                                                     | coding standard, code review records   |
+| 05  | **Verification**             | four levels, integration strategies, test planning, automation, defect lifecycle                                                                     | test plan (IEEE 829), defect log       |
+| 06  | **Configuration management** | version control, change management, build management, release management                                                                             | SCM plan, rollback plan, changelog     |
+| 07  | **Quality assurance**        | five core activities, reviews vs walkthroughs vs inspections vs audits, three metric categories, seven quality attributes                            | quality management plan, scorecard     |
+| 08  | **Process assessment**       | measurement, CMMI five levels, ISO/IEC 12207 three categories, optimization                                                                          | maturity assessment, SPI plan          |
+| 09  | **Process modeling**         | UML activity diagrams, BPMN, documentation standards, workflows                                                                                      | process model, documentation plan      |
+| 10  | **Tooling**                  | CASE tools (upper, lower, integrated), Jira, Trello, Jenkins, GitHub Actions                                                                         | toolchain decision record, CI pipeline |
+| 11  | **Ethics and teams**         | five ethical issues, ACM/IEEE code, team dynamics, Agile, DevOps, plan-driven                                                                        | ethics register, RACI, process style   |
 
 Every phase ships six files plus templates: a phase guide, a checklist, a question set,
 **anti-patterns**, a gate summary, and a condensed reference from the course.
@@ -265,30 +251,30 @@ Every phase ships six files plus templates: a phase guide, a checklist, a questi
 A gate is a named checkpoint with explicit criteria, required evidence, and a permanent record.
 This is the part of Ìlànà that says no.
 
-| Gate | Closes | Sample criterion |
-| --- | --- | --- |
-| **G0** | intake | rigour set and justified; harm and data exposure scanned |
-| **G1** | requirements | no unmeasurable adjectives; every NFR has a number and a unit |
-| **G2** | design | every requirement maps to a design element **and back**; every NFR has a mechanism |
-| **G3** | interface | every destructive action has undo or confirmation; every error says what to do next |
-| **G4** | construction | no secrets in the tree **or the history**; coding standard machine-enforced |
+| Gate   | Closes       | Sample criterion                                                                                      |
+| ------ | ------------ | ----------------------------------------------------------------------------------------------------- |
+| **G0** | intake       | rigour set and justified; harm and data exposure scanned                                              |
+| **G1** | requirements | no unmeasurable adjectives; every NFR has a number and a unit                                         |
+| **G2** | design       | every requirement maps to a design element **and back**; every NFR has a mechanism                    |
+| **G3** | interface    | every destructive action has undo or confirmation; every error says what to do next                   |
+| **G4** | construction | no secrets in the tree **or the history**; coding standard machine-enforced                           |
 | **G5** | verification | test plan predates execution; every requirement has a test; all four levels present or the gap stated |
-| **G6** | release | built from a tag; **rollback rehearsed, with a date** |
-| **G7** | quality | quality plan predates construction; three metric categories; seven attributes with evidence |
-| **G8** | closure | retrospective held; one concrete process change carried forward |
+| **G6** | release      | built from a tag; **rollback rehearsed, with a date**                                                 |
+| **G7** | quality      | quality plan predates construction; three metric categories; seven attributes with evidence           |
+| **G8** | closure      | retrospective held; one concrete process change carried forward                                       |
 
 ### Rigour: the dial that makes it usable
 
 The course is explicit that no single process fits all projects, and a process tool that ignores
 that gets uninstalled by the second project. So every criterion carries a rigour threshold.
 
-| Rigour | Project | Gates |
-| --- | --- | --- |
-| **1** | throwaway script, spike | advisory; ledger still written |
-| **2** | internal tool, portfolio site | warn; one override each |
-| **3** | production software, real users | enforce; overrides logged and counted |
-| **4** | regulated: finance, health, government | enforce; overrides need written justification |
-| **5** | safety-critical: medical, avionics, control | **no overrides**; independent verification mandatory |
+| Rigour | Project                                     | Gates                                                |
+| ------ | ------------------------------------------- | ---------------------------------------------------- |
+| **1**  | throwaway script, spike                     | advisory; ledger still written                       |
+| **2**  | internal tool, portfolio site               | warn; one override each                              |
+| **3**  | production software, real users             | enforce; overrides logged and counted                |
+| **4**  | regulated: finance, health, government      | enforce; overrides need written justification        |
+| **5**  | safety-critical: medical, avionics, control | **no overrides**; independent verification mandatory |
 
 The phases never disappear. Even at rigour 1 you are asked what problem you are solving and whether
 anyone gets hurt if it is wrong. What scales is the ceremony, not the thinking.
@@ -306,7 +292,7 @@ Recorded as OVERRIDE-002. Advancing to phase 05.
 ```
 
 Ìlànà does not argue twice, does not lecture, and does not pretend the gate was met. It names the
-specific consequence for *your* project, records your reason, and carries the risk forward so it
+specific consequence for _your_ project, records your reason, and carries the risk forward so it
 appears again at the release gate, where it matters.
 
 ---
@@ -319,21 +305,21 @@ The value of `verifier` is not that it tests faster. It is that it does not fix 
 the confirmation is independent. The value of `quality-auditor` is that it does not audit its own
 work. The value of `ethics-officer` is that it can stop the run and `conductor` cannot overrule it.
 
-| Agent | Course role | Charter | Never |
-| --- | --- | --- | --- |
-| `conductor` | Project Manager | gates, schedule, ledger, risks | writes production code |
-| `analyst` | Business Analyst | need into testable, traceable requirements | resolves a stakeholder conflict alone |
-| `architect` | Software Designer | requirements into structure at three levels | picks tech before naming the NFR it serves |
-| `interaction-designer` | UI/UX Designer | structure into something a human can operate | ships an error with no next action |
-| `constructor` | Software Developer | design into code that obeys the standard | signs its own acceptance |
-| `verifier` | Tester / QA Engineer | breaks it at four levels, writes it down | fixes what it raised |
-| `configuration-engineer` | DevOps Engineer | branches, changes, builds, releases | approves its own change requests |
-| `quality-auditor` | SQA Engineer | reviews, inspections, audits, compliance | audits work it produced |
-| `metrologist` | Metrics Analyst | the numbers | offers opinion where data exists |
-| `process-modeler` | Process Engineer | draws the process before anyone argues | models the ideal instead of the real |
-| `documentarian` | Technical Writer | knowledge that survives departures | writes docs at the end, from memory |
-| `ethics-officer` | Professional Practice | **holds the veto** | negotiates on public interest |
-| `release-manager` | Release Engineer | go/no-go and the way back | releases without a rehearsed rollback |
+| Agent                    | Course role           | Charter                                      | Never                                      |
+| ------------------------ | --------------------- | -------------------------------------------- | ------------------------------------------ |
+| `conductor`              | Project Manager       | gates, schedule, ledger, risks               | writes production code                     |
+| `analyst`                | Business Analyst      | need into testable, traceable requirements   | resolves a stakeholder conflict alone      |
+| `architect`              | Software Designer     | requirements into structure at three levels  | picks tech before naming the NFR it serves |
+| `interaction-designer`   | UI/UX Designer        | structure into something a human can operate | ships an error with no next action         |
+| `constructor`            | Software Developer    | design into code that obeys the standard     | signs its own acceptance                   |
+| `verifier`               | Tester / QA Engineer  | breaks it at four levels, writes it down     | fixes what it raised                       |
+| `configuration-engineer` | DevOps Engineer       | branches, changes, builds, releases          | approves its own change requests           |
+| `quality-auditor`        | SQA Engineer          | reviews, inspections, audits, compliance     | audits work it produced                    |
+| `metrologist`            | Metrics Analyst       | the numbers                                  | offers opinion where data exists           |
+| `process-modeler`        | Process Engineer      | draws the process before anyone argues       | models the ideal instead of the real       |
+| `documentarian`          | Technical Writer      | knowledge that survives departures           | writes docs at the end, from memory        |
+| `ethics-officer`         | Professional Practice | **holds the veto**                           | negotiates on public interest              |
+| `release-manager`        | Release Engineer      | go/no-go and the way back                    | releases without a rehearsed rollback      |
 
 Every agent card carries a charter, what it owns, its refusal list, and a **handoff contract**:
 
@@ -414,14 +400,14 @@ Every invocation begins by asking which. That question is not optional, because 
 are real: under-serving (write some code, skip the process) and over-serving (a thirteen-agent
 lifecycle for a one-page test plan).
 
-| Mode | Answers | Agents |
-| --- | --- | --- |
-| **FLEET** | "Build this properly, end to end." | up to 13 |
-| **TASK** | "Do this one thing, well." | 1 |
-| **AUDIT** | "How bad is what we already have?" | 4 to 6, read-only |
-| **TUTOR** | "Teach me the process." | 1 |
-| **DOCTOR** | "Our process is broken. Why?" | 3 |
-| **DRILL** | "Test whether I actually know this." | 1 |
+| Mode       | Answers                              | Agents            |
+| ---------- | ------------------------------------ | ----------------- |
+| **FLEET**  | "Build this properly, end to end."   | up to 13          |
+| **TASK**   | "Do this one thing, well."           | 1                 |
+| **AUDIT**  | "How bad is what we already have?"   | 4 to 6, read-only |
+| **TUTOR**  | "Teach me the process."              | 1                 |
+| **DOCTOR** | "Our process is broken. Why?"        | 3                 |
+| **DRILL**  | "Test whether I actually know this." | 1                 |
 
 <details>
 <summary><b>AUDIT mode output</b></summary>
@@ -452,16 +438,16 @@ Findings ranked by **cost of inaction**, not by distance from the textbook. And 
 <details>
 <summary><b>DOCTOR mode: symptom to root cause</b></summary>
 
-| You say | Likely root cause | Phase |
-| --- | --- | --- |
-| "We keep building the wrong thing" | elicitation failure, no stakeholder validation | 01 |
-| "Requirements keep changing" | no change control, not a requirements problem | 06 |
-| "The same bugs keep coming back" | no regression suite, no root-cause analysis | 05 |
-| "Two developers built the same module" | role ambiguity, no RACI | 11 |
-| "Deployments fail" | environments diverge, no infrastructure as code | 06 |
-| "We are always late" | no measurement, estimating from optimism | 08 |
-| "Reviews are rubber stamps" | walkthrough posing as inspection | 07 |
-| "We are Agile but nothing improves" | retrospectives with no follow-through | 08 |
+| You say                                | Likely root cause                               | Phase |
+| -------------------------------------- | ----------------------------------------------- | ----- |
+| "We keep building the wrong thing"     | elicitation failure, no stakeholder validation  | 01    |
+| "Requirements keep changing"           | no change control, not a requirements problem   | 06    |
+| "The same bugs keep coming back"       | no regression suite, no root-cause analysis     | 05    |
+| "Two developers built the same module" | role ambiguity, no RACI                         | 11    |
+| "Deployments fail"                     | environments diverge, no infrastructure as code | 06    |
+| "We are always late"                   | no measurement, estimating from optimism        | 08    |
+| "Reviews are rubber stamps"            | walkthrough posing as inspection                | 07    |
+| "We are Agile but nothing improves"    | retrospectives with no follow-through           | 08    |
 
 **One prescription per diagnosis.** With a metric, a baseline, and a recheck date. Prescribing five
 changes at once guarantees none of them are evaluated.
@@ -527,11 +513,13 @@ Every instrument documents a manual procedure for when Python is unavailable.
 
 ```markdown
 ## 2026-08-24 14:02 | G4 | verifier | GATE PASS
+
 Evidence:
-  - tests/ contains 61 cases, TC-001..TC-061
-  - unit 44, integration 12, system 4, acceptance 1
-  - run: 61 passed, 0 failed, coverage 78% (build/coverage.xml)
-Traceability: 24/24 REQ have >= 1 TC. 9/9 NFR have >= 1 TC. Gap: none.
+
+- tests/ contains 61 cases, TC-001..TC-061
+- unit 44, integration 12, system 4, acceptance 1
+- run: 61 passed, 0 failed, coverage 78% (build/coverage.xml)
+  Traceability: 24/24 REQ have >= 1 TC. 9/9 NFR have >= 1 TC. Gap: none.
 ```
 
 Commit it. **Process history is project history**, it is plain text, and it outlives any particular
@@ -691,6 +679,6 @@ CMMI, and the ACM/IEEE Software Engineering Code of Ethics. See [NOTICE](NOTICE)
 
 **MIT licensed. Built in Ile-Ife.**
 
-*Ìlànà: the disciplined way a thing is done.*
+_Ìlànà: the disciplined way a thing is done._
 
 </div>
