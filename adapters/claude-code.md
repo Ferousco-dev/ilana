@@ -3,7 +3,7 @@
 ## Personal install (all your projects)
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ln -s ~/.ilana-src/skill ~/.claude/skills/ilana
 ```
 
@@ -17,7 +17,7 @@ Or, with the CLI:
 
 ```bash
 mkdir -p .claude/skills
-git submodule add https://github.com/OWNER/ilana.git .ilana-src
+git submodule add https://github.com/Ferousco-dev/ilana.git .ilana-src
 ln -s ../../.ilana-src/skill .claude/skills/ilana
 ```
 

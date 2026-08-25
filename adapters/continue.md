@@ -5,7 +5,7 @@ Continue reads rules from `.continue/rules/` and from `config.yaml`.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 mkdir -p .continue/rules
 ln -s ~/.ilana-src/skill .continue/ilana
 cp ~/.ilana-src/adapters/templates/ILANA.md .continue/rules/ilana.md

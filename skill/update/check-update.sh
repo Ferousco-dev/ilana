@@ -6,7 +6,7 @@
 
 set -eu
 
-REPO_RAW="${1:-https://raw.githubusercontent.com/OWNER/ilana/main/VERSION}"
+REPO_RAW="${1:-https://raw.githubusercontent.com/Ferousco-dev/ilana/main/VERSION}"
 STATE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ilana"
 LOCAL_VERSION_FILE="$(dirname "$0")/../../VERSION"
 

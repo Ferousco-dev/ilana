@@ -1,15 +1,15 @@
 # Ilana code owners.
 # Replace OWNER with the actual GitHub handle or team before publishing.
 
-*                       @OWNER
+*                       @Ferousco-dev
 
 # The kernel and the gates change behaviour everywhere. Extra care.
-/skill/kernel/          @OWNER
-/skill/gates/           @OWNER
-/skill/SKILL.md         @OWNER
+/skill/kernel/          @Ferousco-dev
+/skill/gates/           @Ferousco-dev
+/skill/SKILL.md         @Ferousco-dev
 
 # Tooling that runs on contributors' machines.
-/bin/                   @OWNER
-/install.sh             @OWNER
-/.github/workflows/     @OWNER
-/skill/instruments/     @OWNER
+/bin/                   @Ferousco-dev
+/install.sh             @Ferousco-dev
+/.github/workflows/     @Ferousco-dev
+/skill/instruments/     @Ferousco-dev

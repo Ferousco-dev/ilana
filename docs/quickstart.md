@@ -7,13 +7,13 @@ Five minutes from nothing to a gated process.
 ## 1. Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/ilana/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/Ferousco-dev/ilana/main/install.sh | sh
 ```
 
 Or, if you prefer to see what you are running first:
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ~/.ilana-src/bin/ilana install --link --all
 ```
 

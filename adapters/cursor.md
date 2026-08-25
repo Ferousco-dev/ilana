@@ -5,7 +5,7 @@ Cursor reads rules from `.cursor/rules/*.mdc`.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 mkdir -p .cursor/rules
 cp ~/.ilana-src/adapters/templates/ilana.mdc .cursor/rules/ilana.mdc
 ln -s ~/.ilana-src/skill .cursor/ilana

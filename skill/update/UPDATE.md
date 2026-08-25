@@ -17,7 +17,7 @@ running a version nobody maintains, with none of the fixes and none of the new p
 ## Method 1: symlink install (recommended)
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ln -s ~/.ilana-src/skill ~/.claude/skills/ilana
 ```
 

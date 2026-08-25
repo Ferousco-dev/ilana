@@ -4,8 +4,8 @@ message: "If you use Ìlànà in research or teaching, please cite it."
 type: software
 authors:
   - name: "Ìlànà contributors"
-repository-code: "https://github.com/OWNER/ilana"
-url: "https://github.com/OWNER/ilana"
+repository-code: "https://github.com/Ferousco-dev/ilana"
+url: "https://github.com/Ferousco-dev/ilana"
 abstract: >-
   Ìlànà is a gated software engineering process definition for AI coding agents. It
   implements eleven lifecycle phases, nine quality gates with criteria scaled by a

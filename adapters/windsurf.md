@@ -5,7 +5,7 @@ Windsurf reads rules from `.windsurf/rules/`.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 mkdir -p .windsurf/rules
 ln -s ~/.ilana-src/skill .windsurf/ilana
 cp ~/.ilana-src/adapters/templates/ILANA.md .windsurf/rules/ilana.md

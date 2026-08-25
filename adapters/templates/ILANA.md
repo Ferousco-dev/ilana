@@ -3,7 +3,7 @@
 > Ìlànà (Yoruba): *process, method, procedure, the disciplined way a thing is done.*
 
 A software engineering process operating system. Self-contained version, for agents that read one
-instruction file. Full version: https://github.com/OWNER/ilana
+instruction file. Full version: https://github.com/Ferousco-dev/ilana
 
 ---
 
@@ -202,4 +202,4 @@ most real projects.
 ---
 
 *Derived from SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife.
-MIT licensed. Full version: https://github.com/OWNER/ilana*
+MIT licensed. Full version: https://github.com/Ferousco-dev/ilana*

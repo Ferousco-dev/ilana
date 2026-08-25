@@ -5,7 +5,7 @@ Gemini CLI reads `GEMINI.md` from the repository root and from `~/.gemini/`.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ln -s ~/.ilana-src/skill ~/.gemini/ilana
 ```
 

@@ -6,7 +6,7 @@ directory Codex can read, plus a pointer in `AGENTS.md`.
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ~/.ilana-src/bin/ilana install --link --target ~/.codex/skills/ilana
 ```
 
@@ -45,7 +45,7 @@ No merge to main without G4. No release without a rehearsed rollback.
 ## Vendoring for a team
 
 ```bash
-git submodule add https://github.com/OWNER/ilana.git .ilana-src
+git submodule add https://github.com/Ferousco-dev/ilana.git .ilana-src
 git commit -m "vendor the ilana process definition"
 ```
 

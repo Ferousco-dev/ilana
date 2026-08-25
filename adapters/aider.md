@@ -5,7 +5,7 @@ Aider reads `CONVENTIONS.md` when you add it to the chat, and honours `.aider.co
 ## Install
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 cp ~/.ilana-src/adapters/templates/ILANA.md CONVENTIONS.md
 ```
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Ilana one-command installer.
 #
-#   curl -fsSL https://raw.githubusercontent.com/OWNER/ilana/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/Ferousco-dev/ilana/main/install.sh | sh
 #
 # Clones the repository to ~/.ilana-src, symlinks the skill into every coding
 # agent it can find, and puts `ilana` on your PATH.
@@ -14,7 +14,7 @@
 
 set -eu
 
-REPO="${ILANA_REPO:-https://github.com/OWNER/ilana.git}"
+REPO="${ILANA_REPO:-https://github.com/Ferousco-dev/ilana.git}"
 SRC="${ILANA_SRC:-$HOME/.ilana-src}"
 BIN="${ILANA_BIN:-$HOME/.local/bin}"
 METHOD="${ILANA_METHOD:-link}"

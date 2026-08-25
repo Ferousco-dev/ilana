@@ -8,7 +8,7 @@ Because Copilot loads a single instruction file rather than a directory, use the
 self-contained version.
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 mkdir -p .github
 cp ~/.ilana-src/adapters/templates/ILANA.md .github/copilot-instructions.md
 ```
@@ -31,7 +31,7 @@ If you already have instructions, append it under its own heading rather than re
 Commit the whole skill into the repository so the templates are available:
 
 ```bash
-git submodule add https://github.com/OWNER/ilana.git .ilana-src
+git submodule add https://github.com/Ferousco-dev/ilana.git .ilana-src
 ```
 
 Then point the instruction file at `.ilana-src/skill/` for anything beyond the compact rules.

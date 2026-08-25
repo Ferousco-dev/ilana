@@ -6,7 +6,7 @@
 
 **Ìlànà** *(Yoruba: process, method, procedure, the disciplined way a thing is done)*
 
-[![validate](https://github.com/OWNER/ilana/actions/workflows/validate.yml/badge.svg)](https://github.com/OWNER/ilana/actions/workflows/validate.yml)
+[![validate](https://github.com/Ferousco-dev/ilana/actions/workflows/validate.yml/badge.svg)](https://github.com/Ferousco-dev/ilana/actions/workflows/validate.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![version](https://img.shields.io/badge/version-1.0.0-informational.svg)](VERSION)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -137,13 +137,13 @@ Then delete this section.
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/ilana/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/Ferousco-dev/ilana/main/install.sh | sh
 ```
 
 Or, if you would rather read it first (you should):
 
 ```bash
-git clone https://github.com/OWNER/ilana.git ~/.ilana-src
+git clone https://github.com/Ferousco-dev/ilana.git ~/.ilana-src
 ~/.ilana-src/bin/ilana install --link --all
 ilana doctor
 ```
@@ -661,7 +661,7 @@ tables over paragraphs for comparisons, standard-library-only Python, POSIX shel
 the source material, a named standard, or a real failure you can describe.
 
 ```bash
-git clone https://github.com/OWNER/ilana.git && cd ilana
+git clone https://github.com/Ferousco-dev/ilana.git && cd ilana
 make check
 ```
 

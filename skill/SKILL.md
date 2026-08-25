@@ -18,7 +18,7 @@ license: MIT
 metadata:
   version: 1.0.0
   origin: SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife
-  homepage: https://github.com/OWNER/ilana
+  homepage: https://github.com/Ferousco-dev/ilana
 ---
 
 # ÌLÀNÀ

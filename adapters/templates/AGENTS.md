@@ -10,7 +10,7 @@ Edit the marked lines to match your project.
 This project follows Ìlànà, a gated software engineering process.
 
 **Definition:** `.ilana-src/skill/SKILL.md`
-(vendored with `git submodule add https://github.com/OWNER/ilana.git .ilana-src`)
+(vendored with `git submodule add https://github.com/Ferousco-dev/ilana.git .ilana-src`)
 
 **Project posture** (edit these):
 

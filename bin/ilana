@@ -16,7 +16,7 @@
 
 set -eu
 
-REPO_SLUG="OWNER/ilana"
+REPO_SLUG="Ferousco-dev/ilana"
 RAW_BASE="https://raw.githubusercontent.com/${REPO_SLUG}"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ilana"
 STATE_FILE="$CONFIG_DIR/state.json"
@@ -482,7 +482,7 @@ ilana - the software engineering process skill
   ilana uninstall                      remove installs (never touches .ilana/)
   ilana version
 
-Documentation: https://github.com/OWNER/ilana
+Documentation: https://github.com/Ferousco-dev/ilana
 EOF
 }
 

@@ -34,7 +34,7 @@ In rough order of value:
 ## Getting set up
 
 ```bash
-git clone https://github.com/OWNER/ilana.git
+git clone https://github.com/Ferousco-dev/ilana.git
 cd ilana
 make check          # validate, lint, style
 ./bin/ilana doctor  # verify the payload

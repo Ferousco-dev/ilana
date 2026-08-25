@@ -99,7 +99,7 @@ setup-repo: ## point the repo at your GitHub account, e.g. make setup-repo OWNER
 	   --include='*.json' --include='*.cff' --include='*.sh' --include='CODEOWNERS' \
 	   . 2>/dev/null | grep -v '^./source/' | grep -v '^./.git/'); \
 	 for f in $$files bin/ilana Makefile; do \
-	   sed -i.bak "s|OWNER/ilana|$(OWNER)/ilana|g; s|@OWNER|@$(OWNER)|g" "$$f" && rm -f "$$f.bak"; \
+	   sed -i.bak "s|Ferousco-dev/ilana|$(OWNER)/ilana|g; s|@Ferousco-dev|@$(OWNER)|g" "$$f" && rm -f "$$f.bak"; \
 	 done; \
 	 printf 'repository now points at github.com/%s/ilana\n' "$(OWNER)"
 	@printf 'remaining OWNER references: %s\n' "$$(grep -rl 'OWNER' --include='*.md' --include='*.yml' . 2>/dev/null | grep -v source | wc -l | tr -d ' ')"
