@@ -636,6 +636,32 @@ do_ledger_status() {
   python3 "$(skill_dir)/instruments/scripts/ledger.py" status
 }
 
+do_map() {
+  need_python
+  python3 "$(skill_dir)/instruments/scripts/repo_map.py" map --repo . "$@"
+}
+
+do_guard() {
+  need_python
+  action="${1:-guard}"
+  case "$action" in
+    snapshot) shift; python3 "$(skill_dir)/instruments/scripts/repo_map.py" snapshot --repo . "$@" ;;
+    guard)    [ $# -gt 0 ] && shift; python3 "$(skill_dir)/instruments/scripts/repo_map.py" guard --repo . "$@" ;;
+    *) die "usage: ilana guard [snapshot [--allow GLOB...] | guard [--json]]" ;;
+  esac
+}
+
+do_evidence() {
+  need_python
+  python3 "$(skill_dir)/instruments/scripts/evidence.py" "$@"
+}
+
+do_privacy() {
+  need_python
+  [ $# -gt 0 ] || set -- scan
+  python3 "$(skill_dir)/instruments/scripts/privacy_scan.py" "$@"
+}
+
 do_commands() {
   cmd_dir="$HOME/.claude/commands"
   say "ILANA SLASH COMMANDS"
@@ -690,6 +716,16 @@ ilana - the software engineering process skill
   ilana trace [file]                   requirement coverage gaps
   ilana commands                       list the slash commands
 
+  Existing-repository work (MAINTAIN mode):
+  ilana map [--stdout]                 repository context map (branch, packages, data, env)
+  ilana guard snapshot [--allow GLOB]  record the working tree and allowed scope
+  ilana guard                          verify unrelated changes stayed untouched
+  ilana evidence run --label L -- CMD  run and record a command with head commit and exit code
+  ilana evidence handoff [--set k=v] [--add list=v]   update the milestone state
+  ilana evidence commit-check FILE     Conventional Commits and no AI attribution
+  ilana evidence report                final validation report from recorded evidence
+  ilana privacy [scan | check --markers A,B FILE...]  privacy checklist and leak check
+
   ilana uninstall                      remove installs (never touches .ilana/)
   ilana version
 
@@ -717,6 +753,10 @@ case "$cmd" in
   metrics)    do_metrics "$@" ;;
   trace)      do_trace "$@" ;;
   commands)   do_commands ;;
+  map)        do_map "$@" ;;
+  guard)      do_guard "$@" ;;
+  evidence)   do_evidence "$@" ;;
+  privacy)    do_privacy "$@" ;;
   uninstall)  do_uninstall ;;
   version|-v|--version) say "ilana $(local_version)" ;;
   help|-h|--help) usage ;;

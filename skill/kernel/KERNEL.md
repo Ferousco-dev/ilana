@@ -51,12 +51,13 @@ The kernel keeps eight registers in `.ilana/state.json`. They are the whole of Ã
 
 | Register | Meaning |
 | --- | --- |
-| `MODE` | `FLEET` \| `TASK` \| `AUDIT` \| `TUTOR` \| `DOCTOR` \| `DRILL` \| `MEMO` |
+| `MODE` | `FLEET` \| `TASK` \| `MAINTAIN` \| `AUDIT` \| `TUTOR` \| `DOCTOR` \| `DRILL` \| `MEMO` |
 | `PHASE` | current phase id, `01`..`11`, or `null` |
 | `GATE` | last gate passed, `G0`..`G8` |
 | `AGENT` | agent card currently adopted |
 | `PROCESS_STYLE` | `agile` \| `plan-driven` \| `hybrid` \| `devops` |
 | `RIGOUR` | `1` low .. `5` safety-critical. Sets how hard the gates bite. |
+| `CEREMONY` | `light` \| `standard` \| `regulated`. Sets how much artifact is produced (`protocols/ceremony.md`). |
 | `OPEN` | list of open item IDs (defects, conflicts, change requests, questions) |
 | `OVERRIDES` | gates the user forced open, with reasons |
 

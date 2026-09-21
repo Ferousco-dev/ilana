@@ -37,9 +37,13 @@ check: validate lint-shell lint-python no-emdash ## run every check
 validate: ## verify the skill payload is structurally complete
 	@sh tests/validate.sh
 
+.PHONY: test
+test: ## behavioural tests for the MAINTAIN instruments
+	@sh tests/maintain_test.sh
+
 .PHONY: lint-shell
 lint-shell: ## syntax-check the shell scripts
-	@for f in bin/ilana install.sh $(SKILL)/update/check-update.sh tests/validate.sh; do \
+	@for f in bin/ilana install.sh $(SKILL)/update/check-update.sh tests/validate.sh tests/maintain_test.sh; do \
 	  sh -n "$$f" && printf '  ok   %s\n' "$$f" || exit 1; \
 	done
 	@command -v shellcheck >/dev/null 2>&1 && shellcheck -S warning bin/ilana install.sh || \

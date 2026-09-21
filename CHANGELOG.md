@@ -11,6 +11,43 @@ existing projects behave.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-21
+
+Feedback from a user running Ìlànà on a mature Go repository (a mail server, MailX) showed the
+process leaned greenfield: heavy documents, repeated facts across the SRS, ledger, design and
+final report, and no help protecting unrelated working-tree changes. This release adds a mode and
+instruments for maintaining an existing repository.
+
+### Added
+
+- **`MAINTAIN` mode** (`modes/maintain.md`, `/ilana:maintain`): existing-repository mode with a
+  three-question intake and a compact artifact set. Goal: minimum documentation for the risk level,
+  maximum verified repository evidence.
+- **Ceremony levels** `light`, `standard`, `regulated` (`protocols/ceremony.md`), a documentation
+  axis independent of `RIGOUR`, with a defined gate mapping and a per-fact ownership table that
+  forbids restating facts across documents. New `CEREMONY` register; `ledger.py init --ceremony`.
+- **Checkpoint protocol** (`protocols/checkpoint.md`): `handoff.json` as the single machine-readable
+  milestone state, `milestone-state.md` rendered from it, resume-after-interruption procedure,
+  automatic evidence capture, and the reality check.
+- **Scope-guard protocol** (`protocols/scope-guard.md`): working-tree baseline that protects
+  pre-existing uncommitted work, stop-boundary enforcement, commit hygiene, and marker-based privacy
+  proof.
+- **Article 17, repository evidence outranks assertion.** Prompts, roadmaps, earlier reports and the
+  ledger lose to git, code, migrations and tests; disagreements are stated and recorded.
+- **Instruments** (stdlib Python, 3.8+): `repo_map.py` (repository map, scope snapshot and guard),
+  `evidence.py` (evidence log, policy, commit check and hook, handoff, final report), and
+  `privacy_scan.py` (domain-derived privacy checklist, sensitive log-line finder, marker check).
+- **CLI**: `ilana map`, `ilana guard`, `ilana evidence`, `ilana privacy`.
+- **Tests**: `tests/maintain_test.sh` exercises every new instrument against a throwaway repository,
+  wired into `make test` and CI. Validation now also checks manifest counts and version agreement.
+
+### Changed
+
+- The boot fork recognises an existing repository and reads change requests as `MAINTAIN`.
+- `ledger.py` reads its version from `manifest.json` instead of hardcoding `1.0.0`, and rejects
+  `light` ceremony at `RIGOUR` 4 or 5 (Article 13).
+- Constitution now has 17 articles, protocols 13, modes 7.
+
 ## [1.0.3] - 2026-08-25
 
 ### Fixed

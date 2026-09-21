@@ -23,6 +23,9 @@ jobs:
       - name: Structural validation
         run: sh tests/validate.sh
 
+      - name: MAINTAIN instrument behaviour
+        run: sh tests/maintain_test.sh
+
       - name: No em dashes
         run: make no-emdash
 
@@ -34,7 +37,7 @@ jobs:
 
       - name: POSIX syntax check
         run: |
-          for f in bin/ilana install.sh skill/update/check-update.sh tests/validate.sh; do
+          for f in bin/ilana install.sh skill/update/check-update.sh tests/validate.sh tests/maintain_test.sh tests/maintain_test.sh; do
             sh -n "$f" && echo "ok   $f"
           done
 

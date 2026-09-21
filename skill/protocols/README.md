@@ -14,3 +14,6 @@ Repeatable procedures that cross phases. Load one when you are about to perform 
 | `release.md` | shipping |
 | `incident.md` | something is broken in production |
 | `handoff.md` | moving work between agents or phases |
+| `ceremony.md` | choosing how much process artifact a change needs (`light`, `standard`, `regulated`) |
+| `checkpoint.md` | recording milestone state, capturing evidence, resuming after interruption, the reality check |
+| `scope-guard.md` | protecting unrelated work, enforcing the stop boundary and commit hygiene |

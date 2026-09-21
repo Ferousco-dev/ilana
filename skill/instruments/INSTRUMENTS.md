@@ -10,6 +10,9 @@ Article 10: no superlative without a number. These are the numbers.
 | Gate checker | does the current state satisfy this gate | `scripts/gate_check.py` |
 | Traceability checker | which requirements have no design, code or test | `scripts/traceability.py` |
 | Ledger tool | read, append to and validate `.ilana/` | `scripts/ledger.py` |
+| Repository map and scope guard | what is in this repo, and did the work stay in scope | `scripts/repo_map.py` |
+| Evidence, commit check, handoff, report | what was run, did it pass, can someone resume | `scripts/evidence.py` |
+| Privacy scan | which sensitive classes this repo handles, and did any leak into output | `scripts/privacy_scan.py` |
 
 ## Rules of measurement
 

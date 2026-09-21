@@ -21,6 +21,15 @@ control, because process history is project history.
   gates/
     G0.md .. G8.md    one evidence record per gate attempt
   update-state.json   last update check
+
+  Written by MAINTAIN mode instruments (all optional, all regenerable except policy):
+  policy.json         ceremony level, commit rules, stop boundary
+  handoff.json        single machine-readable milestone state
+  milestone-state.md  rendered view of handoff.json, never hand-edited
+  evidence.jsonl      one record per command run, referenced by EV-### id
+  repo-map.md         generated repository context map
+  privacy-checklist.md generated security and privacy checklist
+  scope-baseline.json protected dirty paths and allowed globs
 ```
 
 ## `state.json`
@@ -35,6 +44,7 @@ control, because process history is project history.
   "agent": "verifier",
   "process_style": "hybrid",
   "rigour": 3,
+  "ceremony": "standard",
   "open": ["DEF-004", "CR-002"],
   "overrides": [
     { "gate": "G3", "reason": "design review deferred; UI is a thin CLI", "at": "2026-08-22" }

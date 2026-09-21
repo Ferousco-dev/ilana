@@ -7,6 +7,7 @@ recorded in the `MODE` register. Switching modes mid-run is legal and is logged 
 | --- | --- | --- | --- | --- |
 | `FLEET` | "Build this properly, end to end." | up to 13 | hours to days | `fleet.md` |
 | `TASK` | "Do this one thing, well." | 1 | minutes | `task.md` |
+| `MAINTAIN` | "Change this existing repository safely, with the least paperwork." | 1 to 3 | minutes to hours | `maintain.md` |
 | `AUDIT` | "How bad is what we already have?" | 4 to 6 | 30 to 90 minutes | `audit.md` |
 | `TUTOR` | "Teach me the process." | 1 (`conductor`) | open ended | `tutor.md` |
 | `DOCTOR` | "Our process is broken. Why?" | 3 (`metrologist`, `quality-auditor`, `conductor`) | 30 minutes | `doctor.md` |
@@ -17,15 +18,17 @@ recorded in the `MODE` register. Switching modes mid-run is legal and is logged 
 
 If the user will not pick, choose using this decision list, top down, and say which rule fired:
 
-1. The user described a *system to build or rescue* -> `FLEET`.
-2. The user named *one artifact* ("SRS", "test plan", "activity diagram", "defect report",
+1. The working directory is an *existing repository with history* and the user asked to add,
+   change, fix, continue or resume work inside it -> `MAINTAIN`.
+2. The user described a *system to build or rescue* -> `FLEET`.
+3. The user named *one artifact* ("SRS", "test plan", "activity diagram", "defect report",
    "branching strategy") -> `TASK`.
-3. The user pointed at *existing code and asked how it is* -> `AUDIT`.
-4. The user described *symptoms* ("we keep missing deadlines", "the same bugs keep coming
+4. The user pointed at *existing code and asked how it is* -> `AUDIT`.
+5. The user described *symptoms* ("we keep missing deadlines", "the same bugs keep coming
    back", "releases break") -> `DOCTOR`.
-5. The user asked *what something means* or *how something works* -> `TUTOR`.
-6. The user has an *exam, interview, or assessment* -> `DRILL`.
-7. Nothing matches -> ask once more, with two concrete options phrased in their own words.
+6. The user asked *what something means* or *how something works* -> `TUTOR`.
+7. The user has an *exam, interview, or assessment* -> `DRILL`.
+8. Nothing matches -> ask once more, with two concrete options phrased in their own words.
 
 ## Mode contracts
 

@@ -28,7 +28,7 @@ need_file kernel/glossary.md
 
 printf '\nmodes\n'
 need_file modes/MODES.md
-for m in fleet task audit tutor doctor drill; do need_file "modes/$m.md"; done
+for m in fleet task maintain audit tutor doctor drill; do need_file "modes/$m.md"; done
 
 printf '\ngates\n'
 need_file gates/GATES.md
@@ -70,7 +70,8 @@ fi
 
 printf '\nprotocols\n'
 for p in question-engine elicitation review-inspection defect-lifecycle change-control \
-         conflict-resolution escalation release incident handoff; do
+         conflict-resolution escalation release incident handoff \
+         ceremony checkpoint scope-guard; do
   need_file "protocols/$p.md"
 done
 
@@ -79,7 +80,7 @@ need_file instruments/INSTRUMENTS.md
 need_file instruments/metrics.md
 need_file instruments/quality-attributes.md
 need_file instruments/cmmi-probe.md
-for s in metrics gate_check traceability ledger; do
+for s in metrics gate_check traceability ledger repo_map evidence privacy_scan; do
   need_file "instruments/scripts/$s.py"
 done
 
@@ -99,7 +100,7 @@ bank_count=$(find "$SKILL/interrogation/banks" -name '*.md' | wc -l | tr -d ' ')
 printf '\ncommands\n'
 CMDS="$ROOT/commands/claude"
 [ -f "$CMDS/ilana.md" ] && ok "commands/claude/ilana.md" || bad "missing commands/claude/ilana.md"
-for c in task fleet audit ship review gate doctor drill tutor status rigour; do
+for c in task fleet maintain audit ship review gate doctor drill tutor status rigour; do
   [ -f "$CMDS/ilana/$c.md" ] || bad "missing commands/claude/ilana/$c.md"
 done
 cmd_count=$(find "$CMDS/ilana" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
@@ -119,6 +120,16 @@ if grep -rn 'Ìlànà v[0-9]' "$SKILL" --include='*.md' >/dev/null 2>&1; then
 else
   ok "no hardcoded version strings in the skill prose"
 fi
+
+printf '\nmanifest counts\n'
+mc() { sed -n "s/.*\"$1\"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p" "$SKILL/manifest.json" | head -1; }
+[ "$(mc modes)" = "7" ] && ok "manifest modes = 7" || bad "manifest modes count is not 7"
+[ "$(mc protocols)" = "13" ] && ok "manifest protocols = 13" || bad "manifest protocols count is not 13"
+[ "$(mc constitution_articles)" = "17" ] && ok "manifest articles = 17" || bad "manifest articles count is not 17"
+[ "$(cat "$ROOT/VERSION")" = "$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$SKILL/manifest.json" | head -1)" ] \
+  && ok "VERSION matches manifest.json" || bad "VERSION and manifest.json disagree"
+grep -q "version: $(cat "$ROOT/VERSION")" "$SKILL/SKILL.md" && ok "SKILL.md metadata version matches" \
+  || bad "SKILL.md metadata version does not match VERSION"
 
 printf '\nupdate\n'
 need_file update/UPDATE.md

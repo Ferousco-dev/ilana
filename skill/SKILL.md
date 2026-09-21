@@ -16,7 +16,7 @@ description: >-
   or asks for a disciplined end-to-end engineering workflow rather than a quick patch.
 license: MIT
 metadata:
-  version: 1.0.3
+  version: 1.1.0
   origin: SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife
   homepage: https://github.com/Ferousco-dev/ilana
 ---
@@ -85,10 +85,15 @@ Ask the user this, verbatim in substance, before doing anything else:
 > "compute defect density", "check my Git branching".
 >
 > If you are not sure, say what you are trying to do and Ìlànà will pick.
+>
+> **Working inside an existing repository?** Say so, or say "maintain". Ìlànà then runs `MAINTAIN`:
+> a repository map, a scope guard, captured evidence and the smallest documentation the risk
+> level needs, instead of a greenfield lifecycle.
 
 Then, and only then, offer the secondary modes in a single compact line:
 
-> Other modes: `AUDIT` (score an existing repo), `TUTOR` (learn the process),
+> Other modes: `MAINTAIN` (change an existing repo safely), `AUDIT` (score an existing repo),
+> `TUTOR` (learn the process),
 > `DOCTOR` (diagnose the process itself), `DRILL` (self-assessment questions).
 
 **Rules for the fork:**
@@ -97,6 +102,9 @@ Then, and only then, offer the secondary modes in a single compact line:
   answering **[1]** and skip re-asking.
 - If the user already named a single artifact ("write me an SRS"), state your reading
   ("Reading this as TASK / analyst / SRS") and let them correct you. Do not silently assume.
+- If the working directory is a git repository with history and the user asks to add, change,
+  fix, continue or resume work in it, say "Reading this as MAINTAIN" and proceed without asking
+  the fork question. `MAINTAIN` asks at most three intake questions (`modes/maintain.md`).
 - If the user answers with something outside the menu, map it and say how you mapped it.
 
 ### Step 0.5 - Intake interrogation
@@ -120,6 +128,8 @@ Then write or update `.ilana/` per `kernel/ledger-spec.md`.
 | Choose or explain a mode | `modes/MODES.md` |
 | Run the full lifecycle | `modes/fleet.md`, `agents/FLEET.md` |
 | Run one operation | `modes/task.md` |
+| Change an existing repository | `modes/maintain.md`, `protocols/checkpoint.md`, `protocols/scope-guard.md` |
+| Choose how much paperwork | `protocols/ceremony.md` |
 | Score an existing codebase | `modes/audit.md` |
 | Teach the process | `modes/tutor.md` |
 | Diagnose a broken process | `modes/doctor.md` |

@@ -1,6 +1,6 @@
 {
   "name": "ilana",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "title": "\u00ccl\u00e0n\u00e0",
   "tagline": "A software engineering process operating system for coding agents.",
   "license": "MIT",
@@ -19,12 +19,12 @@
   },
   "structure": {
     "kernel": "invariant mechanism: constitution, state machine, ledger spec, refusal protocol",
-    "modes": "FLEET, TASK, AUDIT, TUTOR, DOCTOR, DRILL",
+    "modes": "FLEET, TASK, MAINTAIN, AUDIT, TUTOR, DOCTOR, DRILL",
     "gates": "G0 through G8, with rigour-scaled criteria",
     "phases": "11 lifecycle phases, each with PHASE, checklist, questions, antipatterns, gate, reference, templates",
     "agents": "13 role cards with charters, refusals and handoff contracts",
-    "protocols": "10 cross-phase procedures",
-    "instruments": "metrics engine, gate checker, traceability checker, ledger tool",
+    "protocols": "13 cross-phase procedures",
+    "instruments": "metrics engine, gate checker, traceability checker, ledger tool, repository map and scope guard, evidence and handoff, privacy scan",
     "references": "standards, CMMI, ethics, methodology, tooling, reading list",
     "interrogation": "intake questions and 12 assessment banks",
     "update": "self-update mechanism"
@@ -33,9 +33,9 @@
     "phases": 11,
     "agents": 13,
     "gates": 9,
-    "protocols": 10,
-    "modes": 6,
-    "constitution_articles": 16
+    "protocols": 13,
+    "modes": 7,
+    "constitution_articles": 17
   },
   "tags": [
     "software-engineering",

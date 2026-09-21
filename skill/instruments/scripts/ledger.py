@@ -5,7 +5,7 @@ Creates, reads, appends to and validates the .ilana/ directory.
 No third-party dependencies. Python 3.8+.
 
 Usage:
-    python3 ledger.py init    --project NAME [--rigour 3] [--mode FLEET]
+    python3 ledger.py init    --project NAME [--rigour 3] [--mode FLEET] [--ceremony standard]
     python3 ledger.py status
     python3 ledger.py append  --agent analyst --event "G1 PASS" --evidence "docs/srs.md"
     python3 ledger.py gate    --gate G1 --verdict PASS --owner analyst
@@ -36,6 +36,20 @@ FILES = {
 }
 
 PREFIXES = ["REQ", "NFR", "DOM", "DES", "UI", "TC", "DEF", "CR", "RSK", "DEC", "MET", "ETH"]
+
+
+def skill_version():
+    """Read the installed skill version instead of hardcoding one that goes stale."""
+    manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "manifest.json")
+    try:
+        with open(manifest, encoding="utf-8") as handle:
+            return json.load(handle).get("version", "unknown")
+    except (OSError, ValueError):
+        return "unknown"
+
+
+def default_ceremony(rigour):
+    return "light" if rigour <= 2 else ("standard" if rigour == 3 else "regulated")
 
 
 def now():
@@ -76,7 +90,7 @@ def cmd_init(root, args):
             with open(target, "w", encoding="utf-8") as handle:
                 handle.write(content)
     state = {
-        "ilana_version": "1.0.0",
+        "ilana_version": skill_version(),
         "project": args.project,
         "mode": args.mode,
         "phase": None,
@@ -84,6 +98,7 @@ def cmd_init(root, args):
         "agent": "conductor",
         "process_style": args.style,
         "rigour": args.rigour,
+        "ceremony": args.ceremony or default_ceremony(args.rigour),
         "open": [],
         "overrides": [],
         "counters": {p: 0 for p in PREFIXES},
@@ -95,6 +110,7 @@ def cmd_init(root, args):
            ["project: " + args.project,
             "mode: " + args.mode,
             "rigour: " + str(args.rigour),
+            "ceremony: " + (args.ceremony or default_ceremony(args.rigour)),
             "process style: " + args.style])
     print("initialised " + path(root))
     print("commit this directory. process history is project history.")
@@ -134,6 +150,7 @@ def cmd_status(root, args):
     print("  agent:   " + str(state["agent"]))
     print("  rigour:  " + str(state["rigour"]) + " of 5")
     print("  style:   " + str(state["process_style"]))
+    print("  ceremony: " + str(state.get("ceremony", "standard")))
     if state["open"]:
         print("  open:    " + ", ".join(state["open"]))
     else:
@@ -220,6 +237,10 @@ def cmd_validate(root, args):
         problems.append("missing gates/ directory")
     if state.get("rigour") not in (1, 2, 3, 4, 5):
         problems.append("rigour must be 1..5, found " + repr(state.get("rigour")))
+    if state.get("ceremony", "standard") not in ("light", "standard", "regulated"):
+        problems.append("ceremony must be light, standard or regulated, found " + repr(state.get("ceremony")))
+    if state.get("rigour", 3) >= 4 and state.get("ceremony") == "light":
+        problems.append("ceremony light is not permitted at rigour 4 or 5 (Article 13)")
     if state.get("rigour") == 5 and state.get("overrides"):
         problems.append("rigour 5 permits no overrides, but overrides are recorded")
     log = path(root, LOG)
@@ -243,6 +264,8 @@ def main():
     p_init.add_argument("--project", required=True)
     p_init.add_argument("--rigour", type=int, default=3, choices=[1, 2, 3, 4, 5])
     p_init.add_argument("--mode", default="FLEET")
+    p_init.add_argument("--ceremony", choices=["light", "standard", "regulated"],
+                        help="defaults from rigour: 1-2 light, 3 standard, 4-5 regulated")
     p_init.add_argument("--style", default="hybrid",
                         choices=["agile", "plan-driven", "hybrid", "devops"])
 

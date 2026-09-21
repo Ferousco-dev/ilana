@@ -18,7 +18,9 @@ Then execute the boot sequence in full, in order:
    until the user has chosen:
    - `[1] FLEET` a bundle of specialist agents running a full, gated lifecycle
    - `[2] TASK` one specialist, one focused operation, one artifact
-   Then mention the other modes in one line: AUDIT, TUTOR, DOCTOR, DRILL.
+   If the working directory is an existing repository and the request is to change, fix, continue
+     or resume work, say "Reading this as MAINTAIN" and follow `modes/maintain.md` instead.
+   Then mention the other modes in one line: MAINTAIN, AUDIT, TUTOR, DOCTOR, DRILL.
 4. Run the intake interrogation from `interrogation/intake.md`. Five to nine questions, asked in
    **one batch**, never one at a time.
 5. Set `RIGOUR` from the answers and say it out loud with your reason.

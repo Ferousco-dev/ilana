@@ -16,7 +16,7 @@
 [![version](https://img.shields.io/badge/version-1.0.0-informational.svg)](VERSION)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**11 phases · 9 gates · 13 agents · 10 protocols · 6 modes · 16 constitutional articles**
+**11 phases · 9 gates · 13 agents · 13 protocols · 7 modes · 17 constitutional articles**
 
 _Built from SEN102/212 Software Engineering Process, Obafemi Awolowo University, Ile-Ife._
 
@@ -452,7 +452,7 @@ conflicts with the schedule, there is no weighing to do, because Article 1 alrea
 judgement call becomes a lookup, which is what you want under pressure.
 
 <details>
-<summary><b>All sixteen articles</b></summary>
+<summary><b>All seventeen articles</b></summary>
 
 1. **Public interest is supreme.** Where user or public interest conflicts with schedule, budget or
    convenience, the public interest wins.
@@ -476,6 +476,8 @@ judgement call becomes a lookup, which is what you want under pressure.
 14. **Teams are part of the system.** Role clarity and communication paths are engineering concerns.
 15. **Continuous improvement.** Measure, Analyze, Improve, Repeat.
 16. **The human is in command.** Ìlànà advises, gates and refuses. It does not overrule.
+17. **Repository evidence outranks assertion.** Prompts, roadmaps and earlier reports lose to git, code,
+    migrations and tests.
 
 </details>
 
@@ -498,7 +500,7 @@ lecture, no repetition.
 
 ---
 
-## Six modes
+## Seven modes
 
 Every invocation begins by asking which. That question is not optional, because both failure modes
 are real: under-serving (write some code, skip the process) and over-serving (a thirteen-agent
@@ -508,10 +510,32 @@ lifecycle for a one-page test plan).
 | ---------- | ------------------------------------ | ----------------- |
 | **FLEET**  | "Build this properly, end to end."   | up to 13          |
 | **TASK**   | "Do this one thing, well."           | 1                 |
+| **MAINTAIN** | "Change this existing repo safely, with the least paperwork." | 1 to 3 |
 | **AUDIT**  | "How bad is what we already have?"   | 4 to 6, read-only |
 | **TUTOR**  | "Teach me the process."              | 1                 |
 | **DOCTOR** | "Our process is broken. Why?"        | 3                 |
 | **DRILL**  | "Test whether I actually know this." | 1                 |
+
+### MAINTAIN: for repositories that already exist
+
+`FLEET` designs a system. `MAINTAIN` works inside one. It produces the minimum documentation the
+risk level needs and the maximum verified repository evidence:
+
+- **Repository map** of packages, entry points, import edges, migrations, tables, env vars, branch,
+  recent commits and uncommitted work (`ilana map`).
+- **Milestone checkpoint** (`handoff.json` rendered to `milestone-state.md`): completed, current step,
+  verified, remaining, limitations, next action. Another agent resumes from it alone.
+- **Ceremony levels** `light`, `standard`, `regulated`, so a small change does not pay for a
+  regulated lifecycle.
+- **Automatic evidence**: every command run is recorded with head commit and exit code; the final
+  validation report is rendered from those records, not written.
+- **Scope guard**: pre-existing uncommitted work is protected byte for byte; out-of-scope changes fail
+  the guard (`ilana guard`).
+- **Privacy checklist** generated from what the repository actually handles, plus log lines to review
+  and marker tests that prove a secret never reached an output (`ilana privacy`).
+- **Commit hygiene**: Conventional Commits, and no AI or co-author attribution, checked and hookable.
+- **Stop boundary** so the next roadmap item is never started, and a **reality check** so the
+  repository overrides stale prompts and reports (Article 17).
 
 <details>
 <summary><b>AUDIT mode output</b></summary>

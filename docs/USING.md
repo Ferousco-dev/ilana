@@ -81,6 +81,7 @@ Installed with the skill. Faster than prose once you know them.
 | `/ilana` | `use ilana` |
 | `/ilana:task write a test plan` | `ilana: write me a test plan` |
 | `/ilana:fleet a URL shortener` | `ilana: build a URL shortener, fleet mode` |
+| `/ilana:maintain <change>` | `ilana maintain: <change>` |
 | `/ilana:audit` | `audit this repo with ilana` |
 | `/ilana:review` | `ilana: review this diff` |
 | `/ilana:ship` | `ilana: gate this before I ship` |
@@ -235,6 +236,26 @@ audit this repo with ilana
 Read-only. Scores all eleven phases 0 to 4, gives an indicative maturity level, and produces
 findings ranked by **cost of inaction** with a three-horizon remediation plan. Writes exactly one
 file and changes nothing else.
+
+### "I am changing a repository that already exists"
+
+```
+/ilana:maintain finish the v0.23 observability milestone
+```
+
+Runs `MAINTAIN`. It maps the repository, checks the prompt against git and the code, protects any
+uncommitted work that is not yours, records every command as evidence, and ends with a validation
+report rendered from that evidence. Ask for `light`, `standard` or `regulated` ceremony; the default
+is `standard`. State what must not be started ("stop before v0.24"). From the shell:
+
+```
+ilana map                          # repository context map
+ilana guard snapshot --allow "internal/**"
+ilana evidence run --label tests -- go test ./...
+ilana guard                        # fails if unrelated or pre-existing work changed
+ilana evidence handoff --set milestone=v0.23 --add completed="structured logs"
+ilana evidence report
+```
 
 ### "Something about how we work is broken"
 
